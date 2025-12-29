@@ -1,0 +1,25 @@
+{
+  "name": "@aimo.network/sdk",
+  "version": "1.0.0",
+  "description": "AiMo Network SDK",
+  "keywords": [
+    "SDK"
+  ],
+  "author": "Archer <archer@aimo.network>",
+  "license": "ISC",
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm run clean && pnpm run compile",
+    "clean": "rimraf ./dist",
+    "compile": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm run build"
+  },
+  "devDependencies": {
+    "rimraf": "~6.1.0",
+    "typescript": "~5.9.0"
+  }
+}
