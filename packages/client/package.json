@@ -1,7 +1,7 @@
 {
-  "name": "@aimo.network/sdk",
+  "name": "@aimo.network/client",
   "version": "1.0.0",
-  "description": "AiMo Network SDK",
+  "description": "AiMo Network Client SDK",
   "keywords": [
     "SDK"
   ],

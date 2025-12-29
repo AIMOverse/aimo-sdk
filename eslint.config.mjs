@@ -26,5 +26,5 @@ export default tsEslint.config(
     },
   },
 
-  eslintPluginPrettierRecommended
+  eslintPluginPrettierRecommended,
 );
