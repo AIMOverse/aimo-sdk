@@ -9,7 +9,7 @@
     "docs": "doctoc --title '## Table of content' README.md",
     "clean": "pnpm run -r clean",
     "build": "pnpm run -r build",
-    "test": "pnpm run -r test",
+    "test": "npx mocha --recursive \"./test/*.test.ts\"",
     "lint": "eslint ."
   },
   "devDependencies": {
@@ -22,7 +22,11 @@
     "globals": "~16.5.0",
     "prettier": "~3.7.0",
     "typescript": "~5.9.0",
-    "typescript-eslint": "~8.50.0"
+    "typescript-eslint": "~8.50.0",
+    "@types/chai": "^5.2.3",
+    "@types/mocha": "^10.0.10",
+    "chai": "^6.2.2",
+    "mocha": "^11.7.5"
   },
   "license": "ISC",
   "packageManager": "pnpm@10.26.2"
