@@ -38,6 +38,17 @@ function extractDomain(input: RequestInfo | URL): string {
 }
 
 /**
+ * Options for wrapping fetch with signer
+ */
+export interface WrapFetchOptions {
+  /**
+   * Override the domain used for SIWx signing.
+   * If not provided, the domain is extracted from the request URL.
+   */
+  siwxDomain?: string;
+}
+
+/**
  * Wraps a fetch function to add both x402 payment handling and SIWx authentication.
  *
  * This wrapper:
@@ -46,6 +57,7 @@ function extractDomain(input: RequestInfo | URL): string {
  *
  * @param fetch - The fetch function to wrap
  * @param signer - The client signer for authentication and payments
+ * @param options - Optional configuration
  * @returns A wrapped fetch function
  *
  * @example
@@ -62,7 +74,8 @@ function extractDomain(input: RequestInfo | URL): string {
  */
 export function wrapFetchWithSigner(
   fetch: typeof globalThis.fetch,
-  signer: ClientSigner
+  signer: ClientSigner,
+  options?: WrapFetchOptions
 ): typeof globalThis.fetch {
   const client = toX402Client(signer);
   const fetchWithPayment = wrapFetchWithPayment(fetch, client);
@@ -71,7 +84,8 @@ export function wrapFetchWithSigner(
     input: RequestInfo | URL,
     init?: RequestInit
   ): Promise<Response> => {
-    const domain = extractDomain(input);
+    // Use provided siwxDomain or extract from URL
+    const domain = options?.siwxDomain ?? extractDomain(input);
     const uri =
       typeof input === "string"
         ? input

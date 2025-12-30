@@ -64,6 +64,12 @@ export interface AimoClientOptions {
    * Useful for adding custom interceptors or using a different fetch implementation.
    */
   fetchOverride?: typeof globalThis.fetch;
+  /**
+   * Override the domain used for SIWx signing.
+   * Useful for local development where the API server validates against a different domain.
+   * Default: derived from baseUrl hostname
+   */
+  siwxDomain?: string;
 }
 
 /**
@@ -110,7 +116,9 @@ export class AimoClient {
    */
   constructor(options: AimoClientOptions) {
     const baseFetch = options.fetchOverride ?? globalThis.fetch;
-    this.fetch = wrapFetchWithSigner(baseFetch, options.signer);
+    this.fetch = wrapFetchWithSigner(baseFetch, options.signer, {
+      siwxDomain: options.siwxDomain,
+    });
     this.baseUrl = options.baseUrl;
     this.apiBase = options.apiBase ?? ApiBase;
     this.endpoints = {

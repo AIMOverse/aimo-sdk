@@ -40,6 +40,7 @@ describe("SVM Client API Tests", function () {
     client = new AimoClient({
       signer: clientSigner,
       baseUrl: testConfig.apiBase,
+      siwxDomain: testConfig.apiDomain,
     });
   });
 
