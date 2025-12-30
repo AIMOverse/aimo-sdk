@@ -6,7 +6,7 @@
 import { describe, it, before } from "mocha";
 import { assert } from "chai";
 import { testConfig } from "./testEnv";
-import { AimoClient, wrapFetchWithSigner } from "@aimo.network/client";
+import { AimoClient } from "@aimo.network/client";
 import { SvmClientSigner, SOLANA_MAINNET_CHAIN_ID } from "@aimo.network/svm";
 import { EvmClientSigner, EVM_MAINNET_CHAIN_ID } from "@aimo.network/evm";
 import { createKeyPairSignerFromBytes } from "@solana/kit";
@@ -32,16 +32,15 @@ describe("Client API Tests", function () {
       const svmSigner = await createKeyPairSignerFromBytes(privateKeyBytes);
       console.log(`    Using Solana wallet: ${svmSigner.address}`);
 
-      // Create client signer and wrap fetch
+      // Create client signer
       const clientSigner = new SvmClientSigner(
         svmSigner,
         SOLANA_MAINNET_CHAIN_ID
       );
-      const authFetch = wrapFetchWithSigner(fetch, clientSigner);
 
-      // Create AimoClient
+      // Create AimoClient (fetch is wrapped automatically)
       client = new AimoClient({
-        fetch: authFetch,
+        signer: clientSigner,
         baseUrl: testConfig.apiBase,
       });
     });
@@ -130,13 +129,12 @@ describe("Client API Tests", function () {
       const account = privateKeyToAccount(testConfig.evmPrivateKey);
       console.log(`    Using EVM wallet: ${account.address}`);
 
-      // Create client signer and wrap fetch
+      // Create client signer
       const clientSigner = new EvmClientSigner(account, EVM_MAINNET_CHAIN_ID);
-      const authFetch = wrapFetchWithSigner(fetch, clientSigner);
 
-      // Create AimoClient
+      // Create AimoClient (fetch is wrapped automatically)
       client = new AimoClient({
-        fetch: authFetch,
+        signer: clientSigner,
         baseUrl: testConfig.apiBase,
       });
     });

@@ -5,6 +5,9 @@
  * @module
  */
 
+import { wrapFetchWithSigner } from "./fetch";
+import type { ClientSigner } from "./signer";
+
 /**
  * API endpoint paths (without base URL or API version prefix)
  */
@@ -39,10 +42,10 @@ export interface SessionBalanceResponse {
  */
 export interface AimoClientOptions {
   /**
-   * The fetch function to use for requests.
-   * Use `wrapFetchWithSigner` to add SIWx authentication and x402 payment handling.
+   * The client signer for SIWx authentication and x402 payment handling.
+   * The client will automatically wrap fetch with the signer.
    */
-  fetch: typeof globalThis.fetch;
+  signer: ClientSigner;
   /**
    * Base URL of the API server (e.g., "https://api.aimo.network")
    */
@@ -55,6 +58,12 @@ export interface AimoClientOptions {
    * Override default endpoint paths
    */
   endpointsOverride?: Partial<typeof AimoEndpoints>;
+  /**
+   * Optional custom fetch function to use instead of the default.
+   * If provided, this fetch will be wrapped with the signer.
+   * Useful for adding custom interceptors or using a different fetch implementation.
+   */
+  fetchOverride?: typeof globalThis.fetch;
 }
 
 /**
@@ -65,18 +74,15 @@ export interface AimoClientOptions {
  *
  * @example
  * ```typescript
- * import { AimoClient, wrapFetchWithSigner } from "@aimo.network/client";
+ * import { AimoClient } from "@aimo.network/client";
  * import { EvmClientSigner } from "@aimo.network/evm";
  *
  * // Create a signer
  * const signer = new EvmClientSigner(wallet, "eip155:1");
  *
- * // Wrap fetch with SIWx auth and x402 payment handling
- * const authFetch = wrapFetchWithSigner(fetch, signer);
- *
- * // Create the client
+ * // Create the client (fetch is wrapped automatically)
  * const client = new AimoClient({
- *   fetch: authFetch,
+ *   signer,
  *   baseUrl: "https://api.aimo.network",
  * });
  *
@@ -103,7 +109,8 @@ export class AimoClient {
    * @param options - Client configuration options
    */
   constructor(options: AimoClientOptions) {
-    this.fetch = options.fetch;
+    const baseFetch = options.fetchOverride ?? globalThis.fetch;
+    this.fetch = wrapFetchWithSigner(baseFetch, options.signer);
     this.baseUrl = options.baseUrl;
     this.apiBase = options.apiBase ?? ApiBase;
     this.endpoints = {
