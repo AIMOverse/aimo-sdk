@@ -1,9 +1,11 @@
 {
-  "name": "@aimo.network/client",
+  "name": "@aimo.network/svm",
   "version": "1.0.0",
-  "description": "AiMo Network Client SDK",
+  "description": "AiMo Network Solana signer utils",
   "keywords": [
-    "SDK"
+    "sdk",
+    "svm",
+    "solana"
   ],
   "author": "Archer <archer@aimo.network>",
   "license": "ISC",
@@ -19,7 +21,11 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@x402/core": "~2.1.0"
+    "@aimo.network/client": "workspace:*",
+    "@solana/kit": "~5.1.0",
+    "@x402/core": "~2.1.0",
+    "@x402/svm": "~2.1.0",
+    "bs58": "^6.0.0"
   },
   "devDependencies": {
     "rimraf": "~6.1.0",
