@@ -9,6 +9,7 @@ import { testConfig } from "./testEnv";
 import { AimoClient } from "@aimo.network/client";
 import { EvmClientSigner, EVM_MAINNET_CHAIN_ID } from "@aimo.network/evm";
 import { privateKeyToAccount } from "viem/accounts";
+import { chatCompletionsRequestBody } from "./utils";
 
 describe("EVM Client API Tests", function () {
   // Increase timeout for API calls
@@ -72,17 +73,7 @@ describe("EVM Client API Tests", function () {
   });
 
   it("should make chat completion request", async function () {
-    const response = await client.chatCompletions({
-      model: "openai/gpt-4o-mini",
-      stream: false,
-      max_tokens: 100,
-      messages: [
-        {
-          role: "user",
-          content: "Say 'Hello from AiMo SDK test!' and nothing else.",
-        },
-      ],
-    });
+    const response = await client.chatCompletions(chatCompletionsRequestBody);
 
     // Response might be 200 (success) or 402 (payment required)
     assert.oneOf(

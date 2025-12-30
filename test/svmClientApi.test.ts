@@ -10,6 +10,7 @@ import { AimoClient } from "@aimo.network/client";
 import { SvmClientSigner, SOLANA_MAINNET_CHAIN_ID } from "@aimo.network/svm";
 import { createKeyPairSignerFromBytes } from "@solana/kit";
 import bs58 from "bs58";
+import { chatCompletionsRequestBody } from "./utils";
 
 describe("SVM Client API Tests", function () {
   // Increase timeout for API calls
@@ -74,17 +75,15 @@ describe("SVM Client API Tests", function () {
   });
 
   it("should make chat completion request", async function () {
-    const response = await client.chatCompletions({
-      model: "openai/gpt-4o-mini",
-      stream: false,
-      max_tokens: 100,
-      messages: [
-        {
-          role: "user",
-          content: "Say 'Hello from AiMo SDK test!' and nothing else.",
-        },
-      ],
-    });
+    const response = await client.chatCompletions(chatCompletionsRequestBody);
+
+    if (!response.ok) {
+      console.log(
+        `    Chat completion request failed with status ${response.status}`
+      );
+      const body = await response.text();
+      console.log("    Response body:", body);
+    }
 
     // Response might be 200 (success) or 402 (payment required)
     assert.oneOf(
