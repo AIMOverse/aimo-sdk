@@ -34,7 +34,10 @@ describe("SVM SIWx Authentication Tests", function () {
 
     const privateKeyBytes = bs58.decode(testConfig.solanaPrivateKey);
     keypairSigner = await createKeyPairSignerFromBytes(privateKeyBytes);
-    signer = new SvmClientSigner(keypairSigner, SOLANA_MAINNET_CHAIN_ID);
+    signer = new SvmClientSigner({
+      signer: keypairSigner,
+      chainId: SOLANA_MAINNET_CHAIN_ID,
+    });
     address = keypairSigner.address;
     console.log(`    Using Solana wallet: ${address}`);
   });

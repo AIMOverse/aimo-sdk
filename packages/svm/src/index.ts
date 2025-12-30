@@ -67,6 +67,25 @@ export const SOLANA_TESTNET_CHAIN_ID =
   "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z";
 
 /**
+ * Options for creating an SvmClientSigner instance
+ */
+export interface SvmClientSignerOptions {
+  /**
+   * The SVM signer that implements both message and transaction signing
+   */
+  signer: SvmSigner;
+  /**
+   * The CAIP-2 chain ID (e.g., "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp" for mainnet)
+   * @default SOLANA_MAINNET_CHAIN_ID
+   */
+  chainId?: `${string}:${string}`;
+  /**
+   * Optional configuration for x402 payments (e.g., custom RPC URL)
+   */
+  config?: ClientSvmConfig;
+}
+
+/**
  * SVM client signer that implements the ClientSigner interface.
  * Combines x402 payment signing with SIWx authentication.
  *
@@ -79,7 +98,14 @@ export const SOLANA_TESTNET_CHAIN_ID =
  * const keypairSigner = await createKeyPairSignerFromBytes(privateKeyBytes);
  *
  * // Create the client signer
- * const clientSigner = new SvmClientSigner(keypairSigner);
+ * const clientSigner = new SvmClientSigner({ signer: keypairSigner });
+ *
+ * // With custom chain ID and RPC
+ * const clientSigner = new SvmClientSigner({
+ *   signer: keypairSigner,
+ *   chainId: SOLANA_DEVNET_CHAIN_ID,
+ *   config: { rpcUrl: "https://my-rpc.com" },
+ * });
  *
  * // Use for SIWx authentication
  * const signature = await clientSigner.signPayload(siwxPayload);
@@ -106,15 +132,10 @@ export class SvmClientSigner implements ClientSigner {
   /**
    * Creates a new SvmClientSigner instance.
    *
-   * @param signer - The SVM signer that implements both message and transaction signing
-   * @param chainId - The CAIP-2 chain ID (e.g., "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp" for mainnet)
-   * @param config - Optional configuration for the client
+   * @param options - Configuration options for the signer
    */
-  constructor(
-    signer: SvmSigner,
-    chainId: `${string}:${string}` = SOLANA_MAINNET_CHAIN_ID,
-    config?: ClientSvmConfig
-  ) {
+  constructor(options: SvmClientSignerOptions) {
+    const { signer, chainId = SOLANA_MAINNET_CHAIN_ID, config } = options;
     this.signer = signer;
     this.chainId = chainId;
     this.network = chainId;
@@ -186,17 +207,13 @@ export class SvmClientSigner implements ClientSigner {
 /**
  * Creates a SvmClientSigner from an SVM signer.
  *
- * @param signer - The SVM signer
- * @param chainId - The CAIP-2 chain ID (defaults to Solana mainnet)
- * @param config - Optional configuration for the client
+ * @param options - Configuration options for the signer
  * @returns A new SvmClientSigner instance
  */
 export function createSvmClientSigner(
-  signer: SvmSigner,
-  chainId: `${string}:${string}` = SOLANA_MAINNET_CHAIN_ID,
-  config?: ClientSvmConfig
+  options: SvmClientSignerOptions
 ): SvmClientSigner {
-  return new SvmClientSigner(signer, chainId, config);
+  return new SvmClientSigner(options);
 }
 
 // Re-export useful types and utilities from x402/svm

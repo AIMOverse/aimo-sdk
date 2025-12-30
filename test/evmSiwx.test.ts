@@ -29,7 +29,10 @@ describe("EVM SIWx Authentication Tests", function () {
     }
 
     const account = privateKeyToAccount(testConfig.evmPrivateKey);
-    signer = new EvmClientSigner(account, EVM_MAINNET_CHAIN_ID);
+    signer = new EvmClientSigner({
+      signer: account,
+      chainId: EVM_MAINNET_CHAIN_ID,
+    });
     address = account.address;
     console.log(`    Using EVM wallet: ${address}`);
   });

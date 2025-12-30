@@ -45,6 +45,21 @@ export type EvmSigner = EvmMessageSigner & ClientEvmSigner;
 export const EVM_MAINNET_CHAIN_ID = "eip155:1";
 
 /**
+ * Options for creating an EvmClientSigner instance
+ */
+export interface EvmClientSignerOptions {
+  /**
+   * The EVM signer that implements both message and typed data signing
+   */
+  signer: EvmSigner;
+  /**
+   * The CAIP-2 chain ID (e.g., "eip155:1" for Ethereum mainnet)
+   * @default EVM_MAINNET_CHAIN_ID
+   */
+  chainId?: `${string}:${string}`;
+}
+
+/**
  * EVM client signer that implements the ClientSigner interface.
  * Combines x402 payment signing with SIWx authentication.
  *
@@ -59,7 +74,13 @@ export const EVM_MAINNET_CHAIN_ID = "eip155:1";
  * const account = privateKeyToAccount("0x...");
  *
  * // Create the client signer
- * const clientSigner = new EvmClientSigner(account, "eip155:1");
+ * const clientSigner = new EvmClientSigner({ signer: account });
+ *
+ * // With custom chain ID
+ * const clientSigner = new EvmClientSigner({
+ *   signer: account,
+ *   chainId: "eip155:137", // Polygon
+ * });
  *
  * // Use for SIWx authentication
  * const signature = await clientSigner.signPayload(siwxPayload);
@@ -86,13 +107,10 @@ export class EvmClientSigner implements ClientSigner {
   /**
    * Creates a new EvmClientSigner instance.
    *
-   * @param signer - The EVM signer that implements both message and typed data signing
-   * @param chainId - The CAIP-2 chain ID (e.g., "eip155:1" for Ethereum mainnet)
+   * @param options - Configuration options for the signer
    */
-  constructor(
-    signer: EvmSigner,
-    chainId: `${string}:${string}` = EVM_MAINNET_CHAIN_ID
-  ) {
+  constructor(options: EvmClientSignerOptions) {
+    const { signer, chainId = EVM_MAINNET_CHAIN_ID } = options;
     this.signer = signer;
     this.chainId = chainId;
     this.network = chainId;
@@ -152,13 +170,11 @@ export class EvmClientSigner implements ClientSigner {
 /**
  * Creates an EvmClientSigner from an EVM signer.
  *
- * @param signer - The EVM signer
- * @param chainId - The CAIP-2 chain ID (defaults to Ethereum mainnet)
+ * @param options - Configuration options for the signer
  * @returns A new EvmClientSigner instance
  */
 export function createEvmClientSigner(
-  signer: EvmSigner,
-  chainId: `${string}:${string}` = EVM_MAINNET_CHAIN_ID
+  options: EvmClientSignerOptions
 ): EvmClientSigner {
-  return new EvmClientSigner(signer, chainId);
+  return new EvmClientSigner(options);
 }
