@@ -91,7 +91,12 @@ export const SOLANA_TESTNET_CHAIN_ID =
 export class SvmClientSigner implements ClientSigner {
   private readonly signer: SvmSigner;
   private readonly exactScheme: ExactSvmScheme;
-  private readonly chainId: string;
+  private readonly chainId: `${string}:${string}`;
+
+  /**
+   * The SVM network chain ID for x402 v2. Equals to chainId here.
+   */
+  readonly network: `${string}:${string}`;
 
   /**
    * The payment scheme identifier
@@ -107,11 +112,12 @@ export class SvmClientSigner implements ClientSigner {
    */
   constructor(
     signer: SvmSigner,
-    chainId: string = SOLANA_MAINNET_CHAIN_ID,
+    chainId: `${string}:${string}` = SOLANA_MAINNET_CHAIN_ID,
     config?: ClientSvmConfig
   ) {
     this.signer = signer;
     this.chainId = chainId;
+    this.network = chainId;
     // ExactSvmScheme only needs ClientSvmSigner (TransactionSigner)
     this.exactScheme = new ExactSvmScheme(signer, config);
   }
@@ -187,7 +193,7 @@ export class SvmClientSigner implements ClientSigner {
  */
 export function createSvmClientSigner(
   signer: SvmSigner,
-  chainId: string = SOLANA_MAINNET_CHAIN_ID,
+  chainId: `${string}:${string}` = SOLANA_MAINNET_CHAIN_ID,
   config?: ClientSvmConfig
 ): SvmClientSigner {
   return new SvmClientSigner(signer, chainId, config);

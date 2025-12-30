@@ -19,7 +19,8 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@x402/core": "~2.1.0"
+    "@x402/core": "~2.1.0",
+    "@x402/fetch": "~2.1.0"
   },
   "devDependencies": {
     "rimraf": "~6.1.0",

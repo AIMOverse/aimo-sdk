@@ -71,7 +71,12 @@ export const EVM_MAINNET_CHAIN_ID = "eip155:1";
 export class EvmClientSigner implements ClientSigner {
   private readonly signer: EvmSigner;
   private readonly exactScheme: ExactEvmScheme;
-  private readonly chainId: string;
+  readonly chainId: `${string}:${string}`;
+
+  /**
+   * The EVM network chain ID for x402 v2. Equals to chainId here.
+   */
+  readonly network: `${string}:${string}`;
 
   /**
    * The payment scheme identifier
@@ -84,9 +89,13 @@ export class EvmClientSigner implements ClientSigner {
    * @param signer - The EVM signer that implements both message and typed data signing
    * @param chainId - The CAIP-2 chain ID (e.g., "eip155:1" for Ethereum mainnet)
    */
-  constructor(signer: EvmSigner, chainId: string = EVM_MAINNET_CHAIN_ID) {
+  constructor(
+    signer: EvmSigner,
+    chainId: `${string}:${string}` = EVM_MAINNET_CHAIN_ID
+  ) {
     this.signer = signer;
     this.chainId = chainId;
+    this.network = chainId;
     // ExactEvmScheme only needs ClientEvmSigner (signTypedData)
     this.exactScheme = new ExactEvmScheme(signer);
   }
@@ -149,7 +158,7 @@ export class EvmClientSigner implements ClientSigner {
  */
 export function createEvmClientSigner(
   signer: EvmSigner,
-  chainId: string = EVM_MAINNET_CHAIN_ID
+  chainId: `${string}:${string}` = EVM_MAINNET_CHAIN_ID
 ): EvmClientSigner {
   return new EvmClientSigner(signer, chainId);
 }

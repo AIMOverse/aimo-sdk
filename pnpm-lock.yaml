@@ -44,6 +44,9 @@ importers:
       '@x402/core':
         specifier: ~2.1.0
         version: 2.1.0
+      '@x402/fetch':
+        specifier: ~2.1.0
+        version: 2.1.0(typescript@5.9.3)
     devDependencies:
       rimraf:
         specifier: ~6.1.0
@@ -754,6 +757,9 @@ packages:
 
   '@x402/evm@2.1.0':
     resolution: {integrity: sha512-t/zn5QnNQRCIVkJSV3/4UwFStJwToIQM5Os2vqsNTq1xqPK2hcu+Wsu9TsUL/BMLwvRsGu12fGai3ee6IRMT1Q==}
+
+  '@x402/fetch@2.1.0':
+    resolution: {integrity: sha512-KoI3jNv3kFpd57892eBKfEcgw03odn4HrWOhmB2108AYunXdAyeo2tpDpfchk9gqv2C/wGB4gHltIeBmQHWoNw==}
 
   '@x402/svm@2.1.0':
     resolution: {integrity: sha512-KmxQBD4/o2tN/l21sYSKMu6xpgH79nRyTBpNjEZhMI4GMUvtAeXEx6MVMM6b/t7x9BCgggdYFL1OpbEqkhlXgQ==}
@@ -2837,6 +2843,16 @@ snapshots:
       zod: 3.25.76
 
   '@x402/evm@2.1.0(typescript@5.9.3)':
+    dependencies:
+      '@x402/core': 2.1.0
+      viem: 2.43.3(typescript@5.9.3)(zod@3.25.76)
+      zod: 3.25.76
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+
+  '@x402/fetch@2.1.0(typescript@5.9.3)':
     dependencies:
       '@x402/core': 2.1.0
       viem: 2.43.3(typescript@5.9.3)(zod@3.25.76)
