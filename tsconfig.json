@@ -6,6 +6,7 @@
     "paths": {
       "@aimo.network/*": ["packages/*/src"]
     },
-    "noEmit": true
+    "noEmit": true,
+    "types": ["node", "mocha"]
   }
 }
