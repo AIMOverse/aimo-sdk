@@ -41,12 +41,12 @@ export interface SIWxPayload {
   version: string;
   /** Chain ID in CAIP-2 format */
   chainId: string;
-  /** Nonce to prevent replay attacks */
-  nonce: string;
-  /** Time when the message was issued */
-  issuedAt: string;
-  /** Time when the message expires */
-  expirationTime?: string;
+  /** Optional nonce */
+  nonce?: string;
+  /** Optional time when the message was issued */
+  issuedAt?: string;
+  /** Time when the message expires (required) */
+  expirationTime: string;
   /** Time before which the message is not valid */
   notBefore?: string;
   /** Optional request identifier */
@@ -98,8 +98,7 @@ function getChainName(chainId: string): string {
  *   uri: "https://example.com/resource",
  *   version: "1",
  *   chainId: "eip155:1",
- *   nonce: "abc123",
- *   issuedAt: new Date().toISOString(),
+ *   expirationTime: new Date(Date.now() + 3600000).toISOString(), // 1 hour from now
  *   signature: "", // ignored
  * });
  * ```
@@ -123,12 +122,16 @@ export function createSIWxMessage(
   lines.push(`URI: ${payload.uri}`);
   lines.push(`Version: ${payload.version}`);
   lines.push(`Chain ID: ${payload.chainId}`);
-  lines.push(`Nonce: ${payload.nonce}`);
-  lines.push(`Issued At: ${payload.issuedAt}`);
 
-  if (payload.expirationTime) {
-    lines.push(`Expiration Time: ${payload.expirationTime}`);
+  if (payload.nonce) {
+    lines.push(`Nonce: ${payload.nonce}`);
   }
+
+  if (payload.issuedAt) {
+    lines.push(`Issued At: ${payload.issuedAt}`);
+  }
+
+  lines.push(`Expiration Time: ${payload.expirationTime}`);
 
   if (payload.notBefore) {
     lines.push(`Not Before: ${payload.notBefore}`);

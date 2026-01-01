@@ -14,7 +14,6 @@ import {
 import { SvmClientSigner, SOLANA_MAINNET_CHAIN_ID } from "@aimo.network/svm";
 import { createKeyPairSignerFromBytes, signBytes } from "@solana/kit";
 import bs58 from "bs58";
-import crypto from "crypto";
 
 describe("SVM SIWx Authentication Tests", function () {
   this.timeout(30000);
@@ -44,14 +43,16 @@ describe("SVM SIWx Authentication Tests", function () {
 
   describe("SIWx Message Building", function () {
     it("should build a valid CAIP-122 SIWx message for Solana", function () {
+      const expirationTime = new Date(
+        Date.now() + 60 * 60 * 1000
+      ).toISOString();
       const payload = {
         domain: testConfig.apiDomain,
         address,
         uri: `https://${testConfig.apiDomain}`,
         version: "1",
         chainId: SOLANA_MAINNET_CHAIN_ID,
-        nonce: crypto.randomUUID(),
-        issuedAt: new Date().toISOString(),
+        expirationTime,
       };
 
       const message = createSIWxMessage(payload);
@@ -74,11 +75,10 @@ describe("SVM SIWx Authentication Tests", function () {
         `Chain ID: ${SOLANA_MAINNET_CHAIN_ID}`,
         "Expected chain ID"
       );
-      assert.include(message, `Nonce: ${payload.nonce}`, "Expected nonce");
       assert.include(
         message,
-        `Issued At: ${payload.issuedAt}`,
-        "Expected issued at"
+        `Expiration Time: ${payload.expirationTime}`,
+        "Expected expiration time"
       );
 
       console.log("    Generated SIWx message:\n");
@@ -98,8 +98,7 @@ describe("SVM SIWx Authentication Tests", function () {
         uri: `https://${testConfig.apiDomain}`,
         version: "1",
         chainId: SOLANA_MAINNET_CHAIN_ID,
-        nonce: crypto.randomUUID(),
-        issuedAt: new Date().toISOString(),
+        expirationTime: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
       };
 
       const message = createSIWxMessage(payload);
@@ -118,8 +117,7 @@ describe("SVM SIWx Authentication Tests", function () {
         uri: `https://${testConfig.apiDomain}`,
         version: "1",
         chainId: SOLANA_MAINNET_CHAIN_ID,
-        nonce: crypto.randomUUID(),
-        issuedAt: new Date().toISOString(),
+        expirationTime: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
         resources: [
           "https://api.aimo.network/chat",
           "https://api.aimo.network/models",
@@ -150,8 +148,7 @@ describe("SVM SIWx Authentication Tests", function () {
         uri: `https://${testConfig.apiDomain}`,
         version: "1",
         chainId: SOLANA_MAINNET_CHAIN_ID,
-        nonce: crypto.randomUUID(),
-        issuedAt: new Date().toISOString(),
+        expirationTime: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
         signature: "",
       };
 
@@ -183,8 +180,7 @@ describe("SVM SIWx Authentication Tests", function () {
         uri: `https://${testConfig.apiDomain}`,
         version: "1",
         chainId: SOLANA_MAINNET_CHAIN_ID,
-        nonce: crypto.randomUUID(),
-        issuedAt: new Date().toISOString(),
+        expirationTime: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
       };
 
       const { message, createHeader } = prepareSIWxForSigning(payload);
@@ -226,8 +222,7 @@ describe("SVM SIWx Authentication Tests", function () {
         uri: `https://${testConfig.apiDomain}`,
         version: "1",
         chainId: SOLANA_MAINNET_CHAIN_ID,
-        nonce: crypto.randomUUID(),
-        issuedAt: new Date().toISOString(),
+        expirationTime: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
         signature: "",
       };
 
@@ -289,8 +284,8 @@ describe("SVM SIWx Authentication Tests", function () {
     });
 
     it("should reject expired SIWx message", async function () {
-      // Create a message issued 15 minutes ago
-      const pastTime = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+      // Create a message that's already expired
+      const expiredTime = new Date(Date.now() - 60 * 1000).toISOString(); // 1 minute ago
 
       const { message, createHeader } = prepareSIWxForSigning({
         domain: testConfig.apiDomain,
@@ -298,8 +293,7 @@ describe("SVM SIWx Authentication Tests", function () {
         uri: `https://${testConfig.apiDomain}`,
         version: "1",
         chainId: SOLANA_MAINNET_CHAIN_ID,
-        nonce: crypto.randomUUID(),
-        issuedAt: pastTime, // Stale issued-at time
+        expirationTime: expiredTime, // Expired
       });
 
       // Sign using the keypair
@@ -328,52 +322,6 @@ describe("SVM SIWx Authentication Tests", function () {
       );
     });
 
-    it("should reject reused nonce", async function () {
-      const fixedNonce = `test-nonce-${Date.now()}`;
-
-      // First request with the nonce should succeed
-      const payload1 = {
-        domain: testConfig.apiDomain,
-        address,
-        uri: `https://${testConfig.apiDomain}`,
-        version: "1",
-        chainId: SOLANA_MAINNET_CHAIN_ID,
-        nonce: fixedNonce,
-        issuedAt: new Date().toISOString(),
-        signature: "",
-      };
-
-      const header1 = await signer.signPayload(payload1);
-      const response1 = await fetch(
-        `${testConfig.apiBase}/api/v1/session/balance`,
-        {
-          method: "GET",
-          headers: { "SIGN-IN-WITH-X": header1 },
-        }
-      );
-      assert.equal(response1.status, 200, "Expected first request to succeed");
-
-      // Second request with same nonce should fail
-      const payload2 = {
-        ...payload1,
-        issuedAt: new Date().toISOString(), // Different timestamp
-      };
-      const header2 = await signer.signPayload(payload2);
-      const response2 = await fetch(
-        `${testConfig.apiBase}/api/v1/session/balance`,
-        {
-          method: "GET",
-          headers: { "SIGN-IN-WITH-X": header2 },
-        }
-      );
-
-      assert.equal(
-        response2.status,
-        401,
-        "Expected second request with same nonce to fail"
-      );
-    });
-
     it("should reject domain mismatch", async function () {
       const wrongDomain = "wrong-domain.com";
 
@@ -383,8 +331,7 @@ describe("SVM SIWx Authentication Tests", function () {
         uri: `https://${wrongDomain}`,
         version: "1",
         chainId: SOLANA_MAINNET_CHAIN_ID,
-        nonce: crypto.randomUUID(),
-        issuedAt: new Date().toISOString(),
+        expirationTime: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
       });
 
       // Sign using the keypair

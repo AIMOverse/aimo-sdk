@@ -3,23 +3,10 @@ import { wrapFetchWithPayment } from "@x402/fetch";
 import type { SIWxPayload } from "./siwx";
 
 /**
- * Generate a cryptographically secure nonce
+ * Generate an expiration time ISO string (default: 1 hour from now)
  */
-function generateNonce(): string {
-  if (typeof crypto !== "undefined" && crypto.randomUUID) {
-    return crypto.randomUUID();
-  }
-  // Fallback for environments without crypto.randomUUID
-  const array = new Uint8Array(16);
-  if (typeof crypto !== "undefined" && crypto.getRandomValues) {
-    crypto.getRandomValues(array);
-  } else {
-    // Last resort fallback (not cryptographically secure)
-    for (let i = 0; i < 16; i++) {
-      array[i] = Math.floor(Math.random() * 256);
-    }
-  }
-  return Array.from(array, (b) => b.toString(16).padStart(2, "0")).join("");
+function generateExpirationTime(): string {
+  return new Date(Date.now() + 60 * 60 * 1000).toISOString();
 }
 
 /**
@@ -100,8 +87,7 @@ export function wrapFetchWithSigner(
       uri,
       version: "1",
       chainId: signer.network,
-      nonce: generateNonce(),
-      issuedAt: new Date().toISOString(),
+      expirationTime: generateExpirationTime(),
       signature: "", // Will be filled by signPayload
     };
 
