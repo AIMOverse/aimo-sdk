@@ -8,14 +8,17 @@ import { assert } from "chai";
 import { testConfig } from "./testEnv";
 import { AimoClient } from "@aimo.network/client";
 import { EvmClientSigner, EVM_MAINNET_CHAIN_ID } from "@aimo.network/evm";
+import { aimoNetwork } from "@aimo.network/provider";
 import { privateKeyToAccount } from "viem/accounts";
-import { chatCompletionsRequestBody } from "./utils";
+import { generateText } from "ai";
+import { chatCompletionsMessages, chatCompletionsRequestBody } from "./utils";
 
 describe("EVM Client API Tests", function () {
   // Increase timeout for API calls
   this.timeout(60000);
 
   let client: AimoClient;
+  let clientSigner: EvmClientSigner;
 
   before(function () {
     if (!testConfig.evmPrivateKey) {
@@ -29,7 +32,7 @@ describe("EVM Client API Tests", function () {
     console.log(`    Using EVM wallet: ${account.address}`);
 
     // Create client signer
-    const clientSigner = new EvmClientSigner({
+    clientSigner = new EvmClientSigner({
       signer: account,
       chainId: EVM_MAINNET_CHAIN_ID,
     });
@@ -93,5 +96,22 @@ describe("EVM Client API Tests", function () {
       assert.equal(body.x402Version, 2, "Expected x402Version to be 2");
       console.log("    Payment required - insufficient balance");
     }
+  });
+
+  it("should be compatible with ai sdk", async function () {
+    const aimo = aimoNetwork({
+      signer: clientSigner,
+      baseURL: testConfig.apiBase,
+      siwxDomain: testConfig.apiDomain,
+    });
+    const model = aimo.chat("openai/gpt-5");
+    const result = await generateText({
+      model,
+      maxOutputTokens: 1000,
+      messages: chatCompletionsMessages,
+    });
+    assert.isString(result.text, "Expected text in AI SDK response");
+
+    console.log(`    AI SDK Chat completion: ${result.text}`);
   });
 });

@@ -14,11 +14,13 @@
     "lint": "eslint ."
   },
   "devDependencies": {
+    "@ai-sdk/openai": "~3.0.2",
     "@eslint/js": "~9.39.0",
     "@solana/kit": "~5.1.0",
     "@types/chai": "^5.2.3",
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.10.0",
+    "ai": "~6.0.5",
     "bs58": "^6.0.0",
     "chai": "^6.2.2",
     "doctoc": "~2.2.0",
@@ -36,5 +38,5 @@
     "viem": "~2.43.3"
   },
   "license": "ISC",
-  "packageManager": "pnpm@10.26.2"
+  "packageManager": "pnpm@10.27.0"
 }

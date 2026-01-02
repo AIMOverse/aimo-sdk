@@ -1,0 +1,37 @@
+{
+  "name": "@aimo.network/provider",
+  "version": "1.2.0",
+  "description": "AiMo Network Vercel AI SDK provider",
+  "keywords": [
+    "SDK"
+  ],
+  "author": "Archer <archer@aimo.network>",
+  "license": "ISC",
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AIMOverse/aimo-sdk"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "pnpm run clean && pnpm run compile",
+    "clean": "rimraf ./dist",
+    "compile": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "~3.0.2",
+    "@ai-sdk/provider": "~3.0.1",
+    "@aimo.network/client": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "~6.1.0",
+    "typescript": "~5.9.0"
+  }
+}
