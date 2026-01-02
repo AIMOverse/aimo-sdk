@@ -13,6 +13,7 @@ TypeScript SDK for interacting with [AiMo Network](https://aimo.network) - a dec
   - [Usage](#usage)
     - [Solana (SVM) Example](#solana-svm-example)
     - [Ethereum (EVM) Example](#ethereum-evm-example)
+    - [AI SDK Integration](#ai-sdk-integration)
     - [Local Development](#local-development)
     - [Custom RPC URL (Solana)](#custom-rpc-url-solana)
   - [Packages](#packages)
@@ -105,6 +106,44 @@ console.log(`Balance: ${balance.balance_usd} USD`);
 console.log(`CAIP Account: ${balance.caip_account_id}`);
 ```
 
+### AI SDK Integration
+
+The `@aimo.network/provider` package provides seamless integration with Vercel's [AI SDK](https://sdk.vercel.ai/):
+
+```bash
+npm install @aimo.network/provider ai
+```
+
+```typescript
+import { aimoNetwork } from "@aimo.network/provider";
+import { SvmClientSigner, SOLANA_MAINNET_CHAIN_ID } from "@aimo.network/svm";
+import { createKeyPairSignerFromBytes } from "@solana/kit";
+import { generateText } from "ai";
+import bs58 from "bs58";
+
+// Create your signer (SVM or EVM)
+const privateKeyBytes = bs58.decode("your-base58-private-key");
+const keypairSigner = await createKeyPairSignerFromBytes(privateKeyBytes);
+const signer = new SvmClientSigner({
+  signer: keypairSigner,
+  chainId: SOLANA_MAINNET_CHAIN_ID,
+});
+
+// Create the AiMo Network provider
+const aimo = aimoNetwork({
+  signer,
+  baseURL: "https://beta.aimo.network",
+});
+
+// Use with AI SDK's generateText
+const result = await generateText({
+  model: aimo.chat("openai/gpt-4o-mini"),
+  prompt: "What is AiMo Network?",
+});
+
+console.log(result.text);
+```
+
 ### Local Development
 
 When developing locally against a local server that validates against a production domain, use the `siwxDomain` option:
@@ -133,12 +172,13 @@ const signer = new SvmClientSigner({
 
 ## Packages
 
-| Package                | Description                                                              |
-| ---------------------- | ------------------------------------------------------------------------ |
-| `@aimo.network/client` | Core client for API interactions, SIWx authentication, and x402 payments |
-| `@aimo.network/svm`    | Solana wallet signer support                                             |
-| `@aimo.network/evm`    | Ethereum wallet signer support                                           |
-| `@aimo.network/react`  | React hooks and components (coming soon)                                 |
+| Package                  | Description                                                              |
+| ------------------------ | ------------------------------------------------------------------------ |
+| `@aimo.network/client`   | Core client for API interactions, SIWx authentication, and x402 payments |
+| `@aimo.network/svm`      | Solana wallet signer support                                             |
+| `@aimo.network/evm`      | Ethereum wallet signer support                                           |
+| `@aimo.network/provider` | Vercel AI SDK provider integration                                       |
+| `@aimo.network/react`    | React hooks and components (coming soon)                                 |
 
 ## Authentication
 
