@@ -73,12 +73,27 @@ export function wrapFetchWithSigner(
   ): Promise<Response> => {
     // Use provided siwxDomain or extract from URL
     const domain = options?.siwxDomain ?? extractDomain(input);
-    const uri =
-      typeof input === "string"
-        ? input
-        : input instanceof URL
-          ? input.href
-          : input.url;
+
+    // Build URI - if siwxDomain is provided, rewrite the URL to use that domain
+    let uri: string;
+    if (options?.siwxDomain) {
+      const originalUrl = new URL(
+        typeof input === "string"
+          ? input
+          : input instanceof URL
+            ? input.href
+            : input.url
+      );
+      // Rewrite URI with the siwxDomain (preserve path and query)
+      uri = `https://${options.siwxDomain}${originalUrl.pathname}${originalUrl.search}`;
+    } else {
+      uri =
+        typeof input === "string"
+          ? input
+          : input instanceof URL
+            ? input.href
+            : input.url;
+    }
 
     // Create SIWx payload for authentication
     const payload: SIWxPayload = {
