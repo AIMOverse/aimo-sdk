@@ -12,7 +12,11 @@ import { aimoNetwork } from "@aimo.network/provider";
 import { createKeyPairSignerFromBytes } from "@solana/kit";
 import bs58 from "bs58";
 import { generateText } from "ai";
-import { chatCompletionsMessages, chatCompletionsRequestBody } from "./utils";
+import {
+  chatCompletionsMessages,
+  chatCompletionsRequestBody,
+  debugFetch,
+} from "./utils";
 
 describe("SVM Client API Tests", function () {
   // Increase timeout for API calls
@@ -112,6 +116,7 @@ describe("SVM Client API Tests", function () {
       signer: clientSigner,
       baseURL: testConfig.apiBase,
       siwxDomain: testConfig.apiDomain,
+      fetch: debugFetch(globalThis.fetch),
     });
     const model = aimo.chat("openai/gpt-5");
     const result = await generateText({

@@ -7,11 +7,15 @@ import { describe, it, before } from "mocha";
 import { assert } from "chai";
 import { testConfig } from "./testEnv";
 import { AimoClient } from "@aimo.network/client";
-import { EvmClientSigner, EVM_MAINNET_CHAIN_ID } from "@aimo.network/evm";
+import { EvmClientSigner } from "@aimo.network/evm";
 import { aimoNetwork } from "@aimo.network/provider";
 import { privateKeyToAccount } from "viem/accounts";
 import { generateText } from "ai";
-import { chatCompletionsMessages, chatCompletionsRequestBody } from "./utils";
+import {
+  chatCompletionsMessages,
+  chatCompletionsRequestBody,
+  debugFetch,
+} from "./utils";
 
 describe("EVM Client API Tests", function () {
   // Increase timeout for API calls
@@ -34,7 +38,7 @@ describe("EVM Client API Tests", function () {
     // Create client signer
     clientSigner = new EvmClientSigner({
       signer: account,
-      chainId: EVM_MAINNET_CHAIN_ID,
+      chainId: "eip155:8453",
     });
 
     // Create AimoClient (fetch is wrapped automatically)
@@ -103,6 +107,7 @@ describe("EVM Client API Tests", function () {
       signer: clientSigner,
       baseURL: testConfig.apiBase,
       siwxDomain: testConfig.apiDomain,
+      fetch: debugFetch(globalThis.fetch),
     });
     const model = aimo.chat("openai/gpt-5");
     const result = await generateText({

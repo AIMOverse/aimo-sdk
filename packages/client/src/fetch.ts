@@ -109,16 +109,21 @@ export function wrapFetchWithSigner(
     // Sign the payload to get the base64-encoded header
     const siwxHeader = await signer.signPayload(payload);
 
-    // Merge headers
-    const headers = new Headers(init?.headers);
-    headers.set("SIGN-IN-WITH-X", siwxHeader);
+    // Merge headers - convert to plain object for compatibility with x402 fetch wrapper
+    // (spreading a Headers object doesn't copy its entries)
+    const existingHeaders = new Headers(init?.headers);
+    const headersObject: Record<string, string> = {};
+    existingHeaders.forEach((value, key) => {
+      headersObject[key] = value;
+    });
+    headersObject["SIGN-IN-WITH-X"] = siwxHeader;
 
     // Call fetch with payment handling and SIWx auth
     // Convert URL to string for compatibility
     const requestInput = input instanceof URL ? input.href : input;
     return fetchWithPayment(requestInput, {
       ...init,
-      headers,
+      headers: headersObject,
     });
   };
 }
