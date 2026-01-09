@@ -1,5 +1,5 @@
 import type { ClientSigner, SIWxPayload } from "@aimo.network/client";
-import { createSIWxMessage, prepareSIWxForSigning } from "@aimo.network/client";
+import { createSIWxMessage } from "@aimo.network/client";
 import type { PaymentPayload, PaymentRequirements } from "@x402/core/types";
 import {
   ExactSvmScheme,
@@ -172,9 +172,9 @@ export class SvmClientSigner implements ClientSigner {
    * Signs a SIWx payload for authentication.
    *
    * @param payload - The SIWx payload to sign
-   * @returns Promise resolving to the base64-encoded signed envelope
+   * @returns The SIWx signature
    */
-  async signPayload(payload: SIWxPayload): Promise<string> {
+  async signPayload(payload: Omit<SIWxPayload, "signature">): Promise<string> {
     // Use default chainId if not provided in payload
     const payloadWithChain = {
       ...payload,
@@ -198,9 +198,7 @@ export class SvmClientSigner implements ClientSigner {
     const signatureBytes = signatureDict[this.signer.address] as SignatureBytes;
     const signature = base58Encode(signatureBytes);
 
-    // Create the envelope and base64 encode it
-    const envelope = { message, signature };
-    return btoa(JSON.stringify(envelope));
+    return signature;
   }
 }
 
@@ -215,16 +213,6 @@ export function createSvmClientSigner(
 ): SvmClientSigner {
   return new SvmClientSigner(options);
 }
-
-// Re-export useful types and utilities from x402/svm
-export {
-  ExactSvmScheme,
-  type ClientSvmSigner,
-  type ClientSvmConfig,
-} from "@x402/svm";
-
-// Re-export SIWx utilities for convenience
-export { createSIWxMessage, prepareSIWxForSigning } from "@aimo.network/client";
 
 /**
  * Base58 encode a Uint8Array
