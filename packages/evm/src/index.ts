@@ -147,9 +147,9 @@ export class EvmClientSigner implements ClientSigner {
    * Signs a SIWx payload for authentication.
    *
    * @param payload - The SIWx payload to sign
-   * @returns Promise resolving to the base64-encoded signed envelope
+   * @returns The SIWx signature
    */
-  async signPayload(payload: SIWxPayload): Promise<string> {
+  async signPayload(payload: Omit<SIWxPayload, "signature">): Promise<string> {
     // Use default chainId if not provided in payload
     const payloadWithChain = {
       ...payload,
@@ -162,8 +162,8 @@ export class EvmClientSigner implements ClientSigner {
     // Sign the message using EIP-191 personal_sign
     const signature = await this.signer.signMessage({ message });
 
-    // Create and return the base64-encoded envelope
-    return createHeader(signature);
+    // Return the signature
+    return signature;
   }
 }
 

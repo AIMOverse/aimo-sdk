@@ -1,13 +1,14 @@
 import { SchemeRegistration, x402Client } from "@x402/core/client";
 import { SchemeNetworkClient } from "@x402/core/types";
+import { SIWxPayload } from "./siwx";
 
 export type ClientSigner = SchemeNetworkClient & {
   /** The signer's address */
   address: string;
   /** Network identifier in CAIP-2 format */
   network: `${string}:${string}`;
-  /** Sign a SIWx payload and return the base64-encoded envelope */
-  signPayload(payload: import("./siwx").SIWxPayload): Promise<string>;
+  /** Sign a SIWx payload and return the signature */
+  signPayload(payload: Omit<SIWxPayload, "signature">): Promise<string>;
 };
 
 export function toSchemeRegistrations(

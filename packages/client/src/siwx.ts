@@ -15,17 +15,6 @@
 export type Network = `${string}:${string}`;
 
 /**
- * Supported signature schemes for SIWx
- */
-export type SignatureScheme =
-  | "eip191"
-  | "eip712"
-  | "eip1271"
-  | "eip6492"
-  | "siws"
-  | "sep10";
-
-/**
  * SIWx payload containing the message fields and signature
  */
 export interface SIWxPayload {

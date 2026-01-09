@@ -1,6 +1,14 @@
 import { ClientSigner, toX402Client } from "./signer";
 import { wrapFetchWithPayment } from "@x402/fetch";
-import type { SIWxPayload } from "./siwx";
+import { createSIWxMessage, encodeSIWxHeader, type SIWxPayload } from "./siwx";
+
+/**
+ * Cache interface for storing SIWx sessions
+ */
+export interface SIWxSessionCache {
+  get: (signer: string) => Promise<SIWxPayload | undefined>;
+  set: (signer: string, value: SIWxPayload) => Promise<boolean>;
+}
 
 /**
  * Generate an expiration time ISO string (default: 1 hour from now)
@@ -33,6 +41,11 @@ export interface WrapFetchOptions {
    * If not provided, the domain is extracted from the request URL.
    */
   siwxDomain?: string;
+
+  /**
+   * Optional SIWx session cache to reuse signed messages
+   */
+  sessionCache?: SIWxSessionCache;
 }
 
 /**
@@ -71,43 +84,61 @@ export function wrapFetchWithSigner(
     input: RequestInfo | URL,
     init?: RequestInit
   ): Promise<Response> => {
-    // Use provided siwxDomain or extract from URL
-    const domain = options?.siwxDomain ?? extractDomain(input);
+    let siwxHeader: string;
 
-    // Build URI - if siwxDomain is provided, rewrite the URL to use that domain
-    let uri: string;
-    if (options?.siwxDomain) {
-      const originalUrl = new URL(
-        typeof input === "string"
-          ? input
-          : input instanceof URL
-            ? input.href
-            : input.url
-      );
-      // Rewrite URI with the siwxDomain (preserve path and query)
-      uri = `https://${options.siwxDomain}${originalUrl.pathname}${originalUrl.search}`;
+    // Get SIWx header from cache if available, then validate expiration
+    const cachedPayload = await options?.sessionCache?.get(signer.address);
+    if (cachedPayload && new Date(cachedPayload.expirationTime) > new Date()) {
+      const message = createSIWxMessage(cachedPayload);
+      const signature = cachedPayload.signature;
+      siwxHeader = encodeSIWxHeader(message, signature);
     } else {
-      uri =
-        typeof input === "string"
-          ? input
-          : input instanceof URL
-            ? input.href
-            : input.url;
+      // Use provided siwxDomain or extract from URL
+      const domain = options?.siwxDomain ?? extractDomain(input);
+
+      // Build URI - if siwxDomain is provided, rewrite the URL to use that domain
+      let uri: string;
+      if (options?.siwxDomain) {
+        const originalUrl = new URL(
+          typeof input === "string"
+            ? input
+            : input instanceof URL
+              ? input.href
+              : input.url
+        );
+        // Rewrite URI with the siwxDomain (preserve path and query)
+        uri = `https://${options.siwxDomain}${originalUrl.pathname}${originalUrl.search}`;
+      } else {
+        uri =
+          typeof input === "string"
+            ? input
+            : input instanceof URL
+              ? input.href
+              : input.url;
+      }
+
+      // Create SIWx payload for authentication
+      const payload: Omit<SIWxPayload, "signature"> = {
+        domain,
+        address: String(signer.address),
+        uri,
+        version: "1",
+        chainId: signer.network,
+        expirationTime: generateExpirationTime(),
+      };
+      // Sign the payload to get the base64-encoded header
+      const signature = await signer.signPayload(payload);
+      siwxHeader = encodeSIWxHeader(createSIWxMessage(payload), signature);
+
+      // Store in cache if available
+      if (options?.sessionCache) {
+        const fullPayload: SIWxPayload = {
+          ...payload,
+          signature,
+        };
+        await options.sessionCache.set(signer.address, fullPayload);
+      }
     }
-
-    // Create SIWx payload for authentication
-    const payload: SIWxPayload = {
-      domain,
-      address: String(signer.address),
-      uri,
-      version: "1",
-      chainId: signer.network,
-      expirationTime: generateExpirationTime(),
-      signature: "", // Will be filled by signPayload
-    };
-
-    // Sign the payload to get the base64-encoded header
-    const siwxHeader = await signer.signPayload(payload);
 
     // Merge headers - convert to plain object for compatibility with x402 fetch wrapper
     // (spreading a Headers object doesn't copy its entries)

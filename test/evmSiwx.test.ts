@@ -142,7 +142,8 @@ describe("EVM SIWx Authentication Tests", function () {
         signature: "",
       };
 
-      const header = await signer.signPayload(payload);
+      const signature = await signer.signPayload(payload);
+      const header = encodeSIWxHeader(createSIWxMessage(payload), signature);
 
       // Header should be base64 encoded
       assert.isString(header, "Expected header to be a string");
@@ -216,7 +217,11 @@ describe("EVM SIWx Authentication Tests", function () {
         signature: "",
       };
 
-      const siwxHeader = await signer.signPayload(payload);
+      const signature = await signer.signPayload(payload);
+      const siwxHeader = encodeSIWxHeader(
+        createSIWxMessage(payload),
+        signature
+      );
 
       const response = await fetch(
         `${testConfig.apiBase}/api/v1/session/balance`,
