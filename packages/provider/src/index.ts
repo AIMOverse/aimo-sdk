@@ -5,6 +5,8 @@ import {
   wrapFetchWithSigner,
 } from "@aimo.network/client";
 import { LanguageModelV3 } from "@ai-sdk/provider";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { createAnthropic } from "@ai-sdk/anthropic";
 
 /**
  * Options for configuring the Aimo Network provider
@@ -49,22 +51,16 @@ export type AimoChatModelId = string & {};
 export function aimoNetwork(options: AimoNetworkOptions) {
   const apiBaseURL = options.baseURL || "https://beta.aimo.network";
   const baseURL = new URL(ApiBase, apiBaseURL).toString();
+  const wrappedFetch = wrapFetchWithSigner(
+    options.fetch || globalThis.fetch,
+    options.signer,
+    {
+      siwxDomain: options.siwxDomain,
+    }
+  );
 
-  return {
-    /**
-     * Creates an OpenAI-compatible chat model instance with the given model ID.
-     * @param modelId - The ID of the chat model to create
-     * @returns A LanguageModelV3 instance for the specified chat model
-     */
+  const openai = {
     chat: (modelId: AimoChatModelId): LanguageModelV3 => {
-      const wrappedFetch = wrapFetchWithSigner(
-        options.fetch || globalThis.fetch,
-        options.signer,
-        {
-          siwxDomain: options.siwxDomain,
-        }
-      );
-
       const provider = createOpenAI({
         baseURL,
         apiKey: options.apiKey || "siwx", // Dummy key - actual auth is via SIGN-IN-WITH-X header
@@ -73,5 +69,42 @@ export function aimoNetwork(options: AimoNetworkOptions) {
 
       return provider.chat(modelId);
     },
+  };
+
+  const google = {
+    chat: (modelId: AimoChatModelId): LanguageModelV3 => {
+      const provider = createGoogleGenerativeAI({
+        baseURL,
+        apiKey: options.apiKey || "siwx", // Dummy key - actual auth is via SIGN-IN-WITH-X header
+        fetch: wrappedFetch,
+      });
+
+      return provider.chat(modelId);
+    },
+  };
+
+  const anthropic = {
+    chat: (modelId: AimoChatModelId): LanguageModelV3 => {
+      const provider = createAnthropic({
+        baseURL,
+        apiKey: options.apiKey || "siwx", // Dummy key - actual auth is via SIGN-IN-WITH-X header
+        fetch: wrappedFetch,
+      });
+
+      return provider.chat(modelId);
+    },
+  };
+
+  return {
+    /**
+     * Creates an OpenAI-compatible chat model instance with the given model ID.
+     * @param modelId - The ID of the chat model to create
+     * @returns A LanguageModelV3 instance for the specified chat model
+     */
+    chat: (modelId: AimoChatModelId): LanguageModelV3 => openai.chat(modelId),
+
+    openai,
+    google,
+    anthropic,
   };
 }
