@@ -6,11 +6,7 @@
 import { describe, it, before } from "mocha";
 import { assert } from "chai";
 import { testConfig } from "./testEnv";
-import {
-  createSIWxMessage,
-  encodeSIWxHeader,
-  prepareSIWxForSigning,
-} from "@aimo.network/client";
+import { createSIWxMessage, encodeSIWxHeader, prepareSIWxForSigning } from "@aimo.network/client";
 import { EvmClientSigner, EVM_MAINNET_CHAIN_ID } from "@aimo.network/evm";
 import { privateKeyToAccount } from "viem/accounts";
 
@@ -38,9 +34,7 @@ describe("EVM SIWx Authentication Tests", function () {
 
   describe("SIWx Message Building", function () {
     it("should build a valid CAIP-122 SIWx message", function () {
-      const expirationTime = new Date(
-        Date.now() + 60 * 60 * 1000
-      ).toISOString();
+      const expirationTime = new Date(Date.now() + 60 * 60 * 1000).toISOString();
       const payload = {
         domain: testConfig.apiDomain,
         address,
@@ -56,24 +50,16 @@ describe("EVM SIWx Authentication Tests", function () {
       assert.include(
         message,
         `${testConfig.apiDomain} wants you to sign in with your Ethereum account:`,
-        "Expected domain and chain name header"
+        "Expected domain and chain name header",
       );
       assert.include(message, address, "Expected address in message");
-      assert.include(
-        message,
-        `URI: https://${testConfig.apiDomain}`,
-        "Expected URI"
-      );
+      assert.include(message, `URI: https://${testConfig.apiDomain}`, "Expected URI");
       assert.include(message, "Version: 1", "Expected version");
-      assert.include(
-        message,
-        `Chain ID: ${EVM_MAINNET_CHAIN_ID}`,
-        "Expected chain ID"
-      );
+      assert.include(message, `Chain ID: ${EVM_MAINNET_CHAIN_ID}`, "Expected chain ID");
       assert.include(
         message,
         `Expiration Time: ${payload.expirationTime}`,
-        "Expected expiration time"
+        "Expected expiration time",
       );
 
       console.log("    Generated SIWx message:\n");
@@ -81,7 +67,7 @@ describe("EVM SIWx Authentication Tests", function () {
         message
           .split("\n")
           .map((l) => "      " + l)
-          .join("\n")
+          .join("\n"),
       );
     });
 
@@ -101,7 +87,7 @@ describe("EVM SIWx Authentication Tests", function () {
       assert.include(
         message,
         "Sign in to access the AiMo Network API.",
-        "Expected statement in message"
+        "Expected statement in message",
       );
     });
 
@@ -122,11 +108,7 @@ describe("EVM SIWx Authentication Tests", function () {
       const message = createSIWxMessage(payload);
 
       assert.include(message, `Nonce: ${nonce}`, "Expected nonce in message");
-      assert.include(
-        message,
-        `Issued At: ${issuedAt}`,
-        "Expected issuedAt in message"
-      );
+      assert.include(message, `Issued At: ${issuedAt}`, "Expected issuedAt in message");
     });
   });
 
@@ -151,17 +133,9 @@ describe("EVM SIWx Authentication Tests", function () {
       // Decode and verify structure
       const decoded = JSON.parse(atob(header));
       assert.property(decoded, "message", "Expected message in decoded header");
-      assert.property(
-        decoded,
-        "signature",
-        "Expected signature in decoded header"
-      );
+      assert.property(decoded, "signature", "Expected signature in decoded header");
       assert.isString(decoded.message, "Expected message to be a string");
-      assert.match(
-        decoded.signature,
-        /^0x[0-9a-fA-F]+$/,
-        "Expected hex signature"
-      );
+      assert.match(decoded.signature, /^0x[0-9a-fA-F]+$/, "Expected hex signature");
 
       console.log(`    Header length: ${header.length} chars`);
       console.log(`    Signature: ${decoded.signature.slice(0, 20)}...`);
@@ -218,26 +192,16 @@ describe("EVM SIWx Authentication Tests", function () {
       };
 
       const signature = await signer.signPayload(payload);
-      const siwxHeader = encodeSIWxHeader(
-        createSIWxMessage(payload),
-        signature
-      );
+      const siwxHeader = encodeSIWxHeader(createSIWxMessage(payload), signature);
 
-      const response = await fetch(
-        `${testConfig.apiBase}/api/v1/session/balance`,
-        {
-          method: "GET",
-          headers: {
-            "SIGN-IN-WITH-X": siwxHeader,
-          },
-        }
-      );
+      const response = await fetch(`${testConfig.apiBase}/api/v1/session/balance`, {
+        method: "GET",
+        headers: {
+          "SIGN-IN-WITH-X": siwxHeader,
+        },
+      });
 
-      assert.equal(
-        response.status,
-        200,
-        "Expected 200 OK for valid SIWx header"
-      );
+      assert.equal(response.status, 200, "Expected 200 OK for valid SIWx header");
 
       const body: any = await response.json();
       assert.property(body, "caip_account_id");
@@ -249,7 +213,7 @@ describe("EVM SIWx Authentication Tests", function () {
       assert.equal(
         body.caip_account_id,
         expectedCaipAccountId,
-        "CAIP account ID should match signer"
+        "CAIP account ID should match signer",
       );
 
       console.log(`    Authenticated as: ${body.caip_account_id}`);
@@ -257,25 +221,16 @@ describe("EVM SIWx Authentication Tests", function () {
     });
 
     it("should reject invalid SIWx header", async function () {
-      const invalidHeader = btoa(
-        JSON.stringify({ message: "invalid", signature: "0xinvalid" })
-      );
+      const invalidHeader = btoa(JSON.stringify({ message: "invalid", signature: "0xinvalid" }));
 
-      const response = await fetch(
-        `${testConfig.apiBase}/api/v1/session/balance`,
-        {
-          method: "GET",
-          headers: {
-            "SIGN-IN-WITH-X": invalidHeader,
-          },
-        }
-      );
+      const response = await fetch(`${testConfig.apiBase}/api/v1/session/balance`, {
+        method: "GET",
+        headers: {
+          "SIGN-IN-WITH-X": invalidHeader,
+        },
+      });
 
-      assert.equal(
-        response.status,
-        401,
-        "Expected 401 Unauthorized for invalid SIWx header"
-      );
+      assert.equal(response.status, 401, "Expected 401 Unauthorized for invalid SIWx header");
     });
 
     it("should reject expired SIWx message", async function () {
@@ -296,21 +251,14 @@ describe("EVM SIWx Authentication Tests", function () {
       const signature = await account.signMessage({ message });
       const expiredHeader = createHeader(signature);
 
-      const response = await fetch(
-        `${testConfig.apiBase}/api/v1/session/balance`,
-        {
-          method: "GET",
-          headers: {
-            "SIGN-IN-WITH-X": expiredHeader,
-          },
-        }
-      );
+      const response = await fetch(`${testConfig.apiBase}/api/v1/session/balance`, {
+        method: "GET",
+        headers: {
+          "SIGN-IN-WITH-X": expiredHeader,
+        },
+      });
 
-      assert.equal(
-        response.status,
-        401,
-        "Expected 401 Unauthorized for expired SIWx message"
-      );
+      assert.equal(response.status, 401, "Expected 401 Unauthorized for expired SIWx message");
     });
 
     it("should reject domain mismatch", async function () {
@@ -329,21 +277,14 @@ describe("EVM SIWx Authentication Tests", function () {
       const signature = await account.signMessage({ message });
       const mismatchedHeader = createHeader(signature);
 
-      const response = await fetch(
-        `${testConfig.apiBase}/api/v1/session/balance`,
-        {
-          method: "GET",
-          headers: {
-            "SIGN-IN-WITH-X": mismatchedHeader,
-          },
-        }
-      );
+      const response = await fetch(`${testConfig.apiBase}/api/v1/session/balance`, {
+        method: "GET",
+        headers: {
+          "SIGN-IN-WITH-X": mismatchedHeader,
+        },
+      });
 
-      assert.equal(
-        response.status,
-        401,
-        "Expected 401 Unauthorized for domain mismatch"
-      );
+      assert.equal(response.status, 401, "Expected 401 Unauthorized for domain mismatch");
     });
   });
 });

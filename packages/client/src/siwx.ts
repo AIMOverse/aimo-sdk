@@ -92,9 +92,7 @@ function getChainName(chainId: string): string {
  * });
  * ```
  */
-export function createSIWxMessage(
-  payload: Omit<SIWxPayload, "signature"> | SIWxPayload
-): string {
+export function createSIWxMessage(payload: Omit<SIWxPayload, "signature"> | SIWxPayload): string {
   const chainName = getChainName(payload.chainId);
 
   const lines: string[] = [
@@ -176,9 +174,7 @@ export function encodeSIWxHeader(message: string, signature: string): string {
  * const header = createHeader(signature);
  * ```
  */
-export function prepareSIWxForSigning(
-  payload: Omit<SIWxPayload, "signature">
-): {
+export function prepareSIWxForSigning(payload: Omit<SIWxPayload, "signature">): {
   message: string;
   createHeader: (signature: string) => string;
 } {

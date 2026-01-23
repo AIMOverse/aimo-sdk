@@ -1,9 +1,5 @@
 import { createOpenAI } from "@ai-sdk/openai";
-import {
-  ApiBase,
-  ClientSigner,
-  wrapFetchWithSigner,
-} from "@aimo.network/client";
+import { ApiBase, ClientSigner, wrapFetchWithSigner } from "@aimo.network/client";
 import { LanguageModelV3 } from "@ai-sdk/provider";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createAnthropic } from "@ai-sdk/anthropic";
@@ -51,13 +47,9 @@ export type AimoChatModelId = string & {};
 export function aimoNetwork(options: AimoNetworkOptions) {
   const apiBaseURL = options.baseURL || "https://beta.aimo.network";
   const baseURL = new URL(ApiBase, apiBaseURL).toString();
-  const wrappedFetch = wrapFetchWithSigner(
-    options.fetch || globalThis.fetch,
-    options.signer,
-    {
-      siwxDomain: options.siwxDomain,
-    }
-  );
+  const wrappedFetch = wrapFetchWithSigner(options.fetch || globalThis.fetch, options.signer, {
+    siwxDomain: options.siwxDomain,
+  });
 
   const openai = {
     chat: (modelId: AimoChatModelId): LanguageModelV3 => {

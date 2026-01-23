@@ -11,7 +11,10 @@
     "build": "pnpm run -r build",
     "test": "mocha",
     "test:local": "TEST_ENV=local mocha",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --check",
+    "format:fix": "prettier . --write"
   },
   "devDependencies": {
     "@ai-sdk/openai": "~3.0.2",

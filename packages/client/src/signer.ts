@@ -11,9 +11,7 @@ export type ClientSigner = SchemeNetworkClient & {
   signPayload(payload: Omit<SIWxPayload, "signature">): Promise<string>;
 };
 
-export function toSchemeRegistrations(
-  signer: ClientSigner
-): SchemeRegistration {
+export function toSchemeRegistrations(signer: ClientSigner): SchemeRegistration {
   return {
     network: signer.network,
     client: signer,
@@ -21,9 +19,7 @@ export function toSchemeRegistrations(
   };
 }
 
-export function toX402Client(
-  signer: ClientSigner | ClientSigner[]
-): x402Client {
+export function toX402Client(signer: ClientSigner | ClientSigner[]): x402Client {
   if (Array.isArray(signer)) {
     const registrations = signer.map(toSchemeRegistrations);
     const client = x402Client.fromConfig({ schemes: registrations });

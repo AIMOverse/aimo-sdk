@@ -75,15 +75,12 @@ export interface WrapFetchOptions {
 export function wrapFetchWithSigner(
   fetch: typeof globalThis.fetch,
   signer: ClientSigner,
-  options?: WrapFetchOptions
+  options?: WrapFetchOptions,
 ): typeof globalThis.fetch {
   const client = toX402Client(signer);
   const fetchWithPayment = wrapFetchWithPayment(fetch, client);
 
-  return async (
-    input: RequestInfo | URL,
-    init?: RequestInit
-  ): Promise<Response> => {
+  return async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
     let siwxHeader: string;
 
     // Get SIWx header from cache if available, then validate expiration
@@ -100,21 +97,12 @@ export function wrapFetchWithSigner(
       let uri: string;
       if (options?.siwxDomain) {
         const originalUrl = new URL(
-          typeof input === "string"
-            ? input
-            : input instanceof URL
-              ? input.href
-              : input.url
+          typeof input === "string" ? input : input instanceof URL ? input.href : input.url,
         );
         // Rewrite URI with the siwxDomain (preserve path and query)
         uri = `https://${options.siwxDomain}${originalUrl.pathname}${originalUrl.search}`;
       } else {
-        uri =
-          typeof input === "string"
-            ? input
-            : input instanceof URL
-              ? input.href
-              : input.url;
+        uri = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
       }
 
       // Create SIWx payload for authentication

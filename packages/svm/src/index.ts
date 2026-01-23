@@ -1,17 +1,8 @@
 import type { ClientSigner, SIWxPayload } from "@aimo.network/client";
 import { createSIWxMessage } from "@aimo.network/client";
 import type { PaymentPayload, PaymentRequirements } from "@x402/core/types";
-import {
-  ExactSvmScheme,
-  type ClientSvmSigner,
-  type ClientSvmConfig,
-} from "@x402/svm";
-import type {
-  Address,
-  SignableMessage,
-  SignatureDictionary,
-  SignatureBytes,
-} from "@solana/kit";
+import { ExactSvmScheme, type ClientSvmSigner, type ClientSvmConfig } from "@x402/svm";
+import type { Address, SignableMessage, SignatureDictionary, SignatureBytes } from "@solana/kit";
 import bs58 from "bs58";
 
 /**
@@ -35,9 +26,7 @@ export interface SvmMessageSigner {
    * @param messages - Array of SignableMessage objects to sign
    * @returns Promise resolving to an array of signature dictionaries
    */
-  signMessages(
-    messages: readonly SignableMessage[]
-  ): Promise<readonly SignatureDictionary[]>;
+  signMessages(messages: readonly SignableMessage[]): Promise<readonly SignatureDictionary[]>;
 }
 
 /**
@@ -52,8 +41,7 @@ export type SvmSigner = SvmMessageSigner & ClientSvmSigner;
 /**
  * CAIP-2 chain ID for Solana mainnet
  */
-export const SOLANA_MAINNET_CHAIN_ID =
-  "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp";
+export const SOLANA_MAINNET_CHAIN_ID = "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp";
 
 /**
  * CAIP-2 chain ID for Solana devnet
@@ -63,8 +51,7 @@ export const SOLANA_DEVNET_CHAIN_ID = "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1";
 /**
  * CAIP-2 chain ID for Solana testnet
  */
-export const SOLANA_TESTNET_CHAIN_ID =
-  "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z";
+export const SOLANA_TESTNET_CHAIN_ID = "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z";
 
 /**
  * Options for creating an SvmClientSigner instance
@@ -160,12 +147,9 @@ export class SvmClientSigner implements ClientSigner {
    */
   async createPaymentPayload(
     x402Version: number,
-    paymentRequirements: PaymentRequirements
+    paymentRequirements: PaymentRequirements,
   ): Promise<Pick<PaymentPayload, "x402Version" | "payload">> {
-    return this.exactScheme.createPaymentPayload(
-      x402Version,
-      paymentRequirements
-    );
+    return this.exactScheme.createPaymentPayload(x402Version, paymentRequirements);
   }
 
   /**
@@ -208,9 +192,7 @@ export class SvmClientSigner implements ClientSigner {
  * @param options - Configuration options for the signer
  * @returns A new SvmClientSigner instance
  */
-export function createSvmClientSigner(
-  options: SvmClientSignerOptions
-): SvmClientSigner {
+export function createSvmClientSigner(options: SvmClientSignerOptions): SvmClientSigner {
   return new SvmClientSigner(options);
 }
 

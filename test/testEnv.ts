@@ -18,8 +18,7 @@ const DEFAULT_API_BASE_LOCAL = "http://localhost:8000";
 
 // Derive API base and domain
 const apiBase =
-  process.env.API_BASE ||
-  (isLocal ? DEFAULT_API_BASE_LOCAL : DEFAULT_API_BASE_PRODUCTION);
+  process.env.API_BASE || (isLocal ? DEFAULT_API_BASE_LOCAL : DEFAULT_API_BASE_PRODUCTION);
 const apiDomain = process.env.API_DOMAIN || new URL(apiBase).hostname;
 
 // Export environment configuration
@@ -35,9 +34,5 @@ console.log(`\n📋 Test Configuration:`);
 console.log(`   Environment: ${testConfig.isLocal ? "local" : "production"}`);
 console.log(`   API Base: ${testConfig.apiBase}`);
 console.log(`   API Domain: ${testConfig.apiDomain}`);
-console.log(
-  `   EVM Key: ${testConfig.evmPrivateKey ? "✓ configured" : "✗ not set"}`
-);
-console.log(
-  `   Solana Key: ${testConfig.solanaPrivateKey ? "✓ configured" : "✗ not set"}\n`
-);
+console.log(`   EVM Key: ${testConfig.evmPrivateKey ? "✓ configured" : "✗ not set"}`);
+console.log(`   Solana Key: ${testConfig.solanaPrivateKey ? "✓ configured" : "✗ not set"}\n`);

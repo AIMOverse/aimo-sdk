@@ -25,9 +25,7 @@ export interface EvmMessageSigner {
    * @param message - The message to sign (string or raw bytes)
    * @returns The signature as a hex string
    */
-  signMessage(args: {
-    message: string | { raw: Uint8Array };
-  }): Promise<`0x${string}`>;
+  signMessage(args: { message: string | { raw: Uint8Array } }): Promise<`0x${string}`>;
 }
 
 /**
@@ -135,12 +133,9 @@ export class EvmClientSigner implements ClientSigner {
    */
   async createPaymentPayload(
     x402Version: number,
-    paymentRequirements: PaymentRequirements
+    paymentRequirements: PaymentRequirements,
   ): Promise<Pick<PaymentPayload, "x402Version" | "payload">> {
-    return this.exactScheme.createPaymentPayload(
-      x402Version,
-      paymentRequirements
-    );
+    return this.exactScheme.createPaymentPayload(x402Version, paymentRequirements);
   }
 
   /**
@@ -173,8 +168,6 @@ export class EvmClientSigner implements ClientSigner {
  * @param options - Configuration options for the signer
  * @returns A new EvmClientSigner instance
  */
-export function createEvmClientSigner(
-  options: EvmClientSignerOptions
-): EvmClientSigner {
+export function createEvmClientSigner(options: EvmClientSignerOptions): EvmClientSigner {
   return new EvmClientSigner(options);
 }

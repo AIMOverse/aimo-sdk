@@ -140,13 +140,11 @@ export class AimoClient {
       errorBody = await response.json();
     } catch (e) {
       // If response is not JSON/text, rethrow generic error
-      throw new Error(
-        `API request failed: ${response.status} ${response.statusText}`
-      );
+      throw new Error(`API request failed: ${response.status} ${response.statusText}`);
     }
 
     throw new Error(
-      `API request failed: ${response.status} ${response.statusText} - ${errorBody.error || JSON.stringify(errorBody)}`
+      `API request failed: ${response.status} ${response.statusText} - ${errorBody.error || JSON.stringify(errorBody)}`,
     );
   }
 
@@ -154,13 +152,11 @@ export class AimoClient {
    * Builds the full URL for an endpoint.
    * Handles slash normalization to avoid double slashes.
    */
-  private buildUrl(
-    endpoint: (typeof AimoEndpoints)[keyof typeof AimoEndpoints]
-  ): string {
+  private buildUrl(endpoint: (typeof AimoEndpoints)[keyof typeof AimoEndpoints]): string {
     // Ensure no double slashes
     return `${this.baseUrl.replace(/\/+$/, "")}/${this.apiBase.replace(
       /^\/+|\/+$/g,
-      ""
+      "",
     )}/${endpoint.replace(/^\/+/, "")}`;
   }
 

@@ -11,11 +11,7 @@ import { EvmClientSigner } from "@aimo.network/evm";
 import { aimoNetwork } from "@aimo.network/provider";
 import { privateKeyToAccount } from "viem/accounts";
 import { generateText } from "ai";
-import {
-  chatCompletionsMessages,
-  chatCompletionsRequestBody,
-  debugFetch,
-} from "./utils";
+import { chatCompletionsMessages, chatCompletionsRequestBody, debugFetch } from "./utils";
 
 describe("EVM Client API Tests", function () {
   // Increase timeout for API calls
@@ -52,43 +48,27 @@ describe("EVM Client API Tests", function () {
   it("should query session balance", async function () {
     const balance = await client.sessionBalance();
 
-    assert.property(
-      balance,
-      "caip_account_id",
-      "Expected caip_account_id in response"
-    );
-    assert.property(
-      balance,
-      "balance_micro_usdc",
-      "Expected balance_micro_usdc in response"
-    );
+    assert.property(balance, "caip_account_id", "Expected caip_account_id in response");
+    assert.property(balance, "balance_micro_usdc", "Expected balance_micro_usdc in response");
     assert.property(balance, "balance_usd", "Expected balance_usd in response");
     assert.typeOf(
       balance.balance_micro_usdc,
       "number",
-      "Expected balance_micro_usdc to be a number"
+      "Expected balance_micro_usdc to be a number",
     );
 
     console.log(`    Session balance: ${balance.balance_usd} USD`);
     console.log(`    CAIP Account: ${balance.caip_account_id}`);
 
     // Verify CAIP account ID format is correct for EVM
-    assert.include(
-      balance.caip_account_id,
-      "eip155:",
-      "Expected EVM CAIP account ID"
-    );
+    assert.include(balance.caip_account_id, "eip155:", "Expected EVM CAIP account ID");
   });
 
   it("should make chat completion request", async function () {
     const response = await client.chatCompletions(chatCompletionsRequestBody);
 
     // Response might be 200 (success) or 402 (payment required)
-    assert.oneOf(
-      response.status,
-      [200, 402],
-      "Expected 200 OK or 402 Payment Required"
-    );
+    assert.oneOf(response.status, [200, 402], "Expected 200 OK or 402 Payment Required");
 
     if (response.status === 200) {
       const body: any = await response.json();

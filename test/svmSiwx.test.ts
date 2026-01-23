@@ -6,11 +6,7 @@
 import { describe, it, before } from "mocha";
 import { assert } from "chai";
 import { testConfig } from "./testEnv";
-import {
-  createSIWxMessage,
-  encodeSIWxHeader,
-  prepareSIWxForSigning,
-} from "@aimo.network/client";
+import { createSIWxMessage, encodeSIWxHeader, prepareSIWxForSigning } from "@aimo.network/client";
 import { SvmClientSigner, SOLANA_MAINNET_CHAIN_ID } from "@aimo.network/svm";
 import { createKeyPairSignerFromBytes, signBytes } from "@solana/kit";
 import bs58 from "bs58";
@@ -24,9 +20,7 @@ describe("SVM SIWx Authentication Tests", function () {
 
   before(async function () {
     if (!testConfig.solanaPrivateKey) {
-      console.log(
-        "    ⚠️  Skipping SVM SIWx tests - SOLANA_PRIVATE_KEY not set"
-      );
+      console.log("    ⚠️  Skipping SVM SIWx tests - SOLANA_PRIVATE_KEY not set");
       this.skip();
       return;
     }
@@ -43,9 +37,7 @@ describe("SVM SIWx Authentication Tests", function () {
 
   describe("SIWx Message Building", function () {
     it("should build a valid CAIP-122 SIWx message for Solana", function () {
-      const expirationTime = new Date(
-        Date.now() + 60 * 60 * 1000
-      ).toISOString();
+      const expirationTime = new Date(Date.now() + 60 * 60 * 1000).toISOString();
       const payload = {
         domain: testConfig.apiDomain,
         address,
@@ -61,24 +53,16 @@ describe("SVM SIWx Authentication Tests", function () {
       assert.include(
         message,
         `${testConfig.apiDomain} wants you to sign in with your Solana account:`,
-        "Expected domain and chain name header"
+        "Expected domain and chain name header",
       );
       assert.include(message, address, "Expected address in message");
-      assert.include(
-        message,
-        `URI: https://${testConfig.apiDomain}`,
-        "Expected URI"
-      );
+      assert.include(message, `URI: https://${testConfig.apiDomain}`, "Expected URI");
       assert.include(message, "Version: 1", "Expected version");
-      assert.include(
-        message,
-        `Chain ID: ${SOLANA_MAINNET_CHAIN_ID}`,
-        "Expected chain ID"
-      );
+      assert.include(message, `Chain ID: ${SOLANA_MAINNET_CHAIN_ID}`, "Expected chain ID");
       assert.include(
         message,
         `Expiration Time: ${payload.expirationTime}`,
-        "Expected expiration time"
+        "Expected expiration time",
       );
 
       console.log("    Generated SIWx message:\n");
@@ -86,7 +70,7 @@ describe("SVM SIWx Authentication Tests", function () {
         message
           .split("\n")
           .map((l) => "      " + l)
-          .join("\n")
+          .join("\n"),
       );
     });
 
@@ -106,7 +90,7 @@ describe("SVM SIWx Authentication Tests", function () {
       assert.include(
         message,
         "Sign in to access the AiMo Network API.",
-        "Expected statement in message"
+        "Expected statement in message",
       );
     });
 
@@ -118,25 +102,14 @@ describe("SVM SIWx Authentication Tests", function () {
         version: "1",
         chainId: SOLANA_MAINNET_CHAIN_ID,
         expirationTime: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
-        resources: [
-          "https://api.aimo.network/chat",
-          "https://api.aimo.network/models",
-        ],
+        resources: ["https://api.aimo.network/chat", "https://api.aimo.network/models"],
       };
 
       const message = createSIWxMessage(payload);
 
       assert.include(message, "Resources:", "Expected resources section");
-      assert.include(
-        message,
-        "- https://api.aimo.network/chat",
-        "Expected first resource"
-      );
-      assert.include(
-        message,
-        "- https://api.aimo.network/models",
-        "Expected second resource"
-      );
+      assert.include(message, "- https://api.aimo.network/chat", "Expected first resource");
+      assert.include(message, "- https://api.aimo.network/models", "Expected second resource");
     });
   });
 
@@ -161,11 +134,7 @@ describe("SVM SIWx Authentication Tests", function () {
       // Decode and verify structure
       const decoded = JSON.parse(atob(header));
       assert.property(decoded, "message", "Expected message in decoded header");
-      assert.property(
-        decoded,
-        "signature",
-        "Expected signature in decoded header"
-      );
+      assert.property(decoded, "signature", "Expected signature in decoded header");
       assert.isString(decoded.message, "Expected message to be a string");
       // Solana signatures are base58 encoded
       assert.isString(decoded.signature, "Expected base58 signature");
@@ -188,10 +157,7 @@ describe("SVM SIWx Authentication Tests", function () {
 
       // Sign the message manually using @solana/kit
       const messageBytes = new TextEncoder().encode(message);
-      const signatureBytes = await signBytes(
-        keypairSigner.keyPair.privateKey,
-        messageBytes
-      );
+      const signatureBytes = await signBytes(keypairSigner.keyPair.privateKey, messageBytes);
       const signature = bs58.encode(signatureBytes);
 
       // Create the header
@@ -228,26 +194,16 @@ describe("SVM SIWx Authentication Tests", function () {
       };
 
       const signature = await signer.signPayload(payload);
-      const siwxHeader = encodeSIWxHeader(
-        createSIWxMessage(payload),
-        signature
-      );
+      const siwxHeader = encodeSIWxHeader(createSIWxMessage(payload), signature);
 
-      const response = await fetch(
-        `${testConfig.apiBase}/api/v1/session/balance`,
-        {
-          method: "GET",
-          headers: {
-            "SIGN-IN-WITH-X": siwxHeader,
-          },
-        }
-      );
+      const response = await fetch(`${testConfig.apiBase}/api/v1/session/balance`, {
+        method: "GET",
+        headers: {
+          "SIGN-IN-WITH-X": siwxHeader,
+        },
+      });
 
-      assert.equal(
-        response.status,
-        200,
-        "Expected 200 OK for valid SIWx header"
-      );
+      assert.equal(response.status, 200, "Expected 200 OK for valid SIWx header");
 
       const body: any = await response.json();
       assert.property(body, "caip_account_id");
@@ -259,7 +215,7 @@ describe("SVM SIWx Authentication Tests", function () {
       assert.equal(
         body.caip_account_id,
         expectedCaipAccountId,
-        "CAIP account ID should match signer"
+        "CAIP account ID should match signer",
       );
 
       console.log(`    Authenticated as: ${body.caip_account_id}`);
@@ -267,25 +223,16 @@ describe("SVM SIWx Authentication Tests", function () {
     });
 
     it("should reject invalid SIWx header", async function () {
-      const invalidHeader = btoa(
-        JSON.stringify({ message: "invalid", signature: "invalid" })
-      );
+      const invalidHeader = btoa(JSON.stringify({ message: "invalid", signature: "invalid" }));
 
-      const response = await fetch(
-        `${testConfig.apiBase}/api/v1/session/balance`,
-        {
-          method: "GET",
-          headers: {
-            "SIGN-IN-WITH-X": invalidHeader,
-          },
-        }
-      );
+      const response = await fetch(`${testConfig.apiBase}/api/v1/session/balance`, {
+        method: "GET",
+        headers: {
+          "SIGN-IN-WITH-X": invalidHeader,
+        },
+      });
 
-      assert.equal(
-        response.status,
-        401,
-        "Expected 401 Unauthorized for invalid SIWx header"
-      );
+      assert.equal(response.status, 401, "Expected 401 Unauthorized for invalid SIWx header");
     });
 
     it("should reject expired SIWx message", async function () {
@@ -303,28 +250,18 @@ describe("SVM SIWx Authentication Tests", function () {
 
       // Sign using the keypair
       const messageBytes = new TextEncoder().encode(message);
-      const signatureBytes = await signBytes(
-        keypairSigner.keyPair.privateKey,
-        messageBytes
-      );
+      const signatureBytes = await signBytes(keypairSigner.keyPair.privateKey, messageBytes);
       const signature = bs58.encode(signatureBytes);
       const expiredHeader = createHeader(signature);
 
-      const response = await fetch(
-        `${testConfig.apiBase}/api/v1/session/balance`,
-        {
-          method: "GET",
-          headers: {
-            "SIGN-IN-WITH-X": expiredHeader,
-          },
-        }
-      );
+      const response = await fetch(`${testConfig.apiBase}/api/v1/session/balance`, {
+        method: "GET",
+        headers: {
+          "SIGN-IN-WITH-X": expiredHeader,
+        },
+      });
 
-      assert.equal(
-        response.status,
-        401,
-        "Expected 401 Unauthorized for expired SIWx message"
-      );
+      assert.equal(response.status, 401, "Expected 401 Unauthorized for expired SIWx message");
     });
 
     it("should reject domain mismatch", async function () {
@@ -341,28 +278,18 @@ describe("SVM SIWx Authentication Tests", function () {
 
       // Sign using the keypair
       const messageBytes = new TextEncoder().encode(message);
-      const signatureBytes = await signBytes(
-        keypairSigner.keyPair.privateKey,
-        messageBytes
-      );
+      const signatureBytes = await signBytes(keypairSigner.keyPair.privateKey, messageBytes);
       const signature = bs58.encode(signatureBytes);
       const mismatchedHeader = createHeader(signature);
 
-      const response = await fetch(
-        `${testConfig.apiBase}/api/v1/session/balance`,
-        {
-          method: "GET",
-          headers: {
-            "SIGN-IN-WITH-X": mismatchedHeader,
-          },
-        }
-      );
+      const response = await fetch(`${testConfig.apiBase}/api/v1/session/balance`, {
+        method: "GET",
+        headers: {
+          "SIGN-IN-WITH-X": mismatchedHeader,
+        },
+      });
 
-      assert.equal(
-        response.status,
-        401,
-        "Expected 401 Unauthorized for domain mismatch"
-      );
+      assert.equal(response.status, 401, "Expected 401 Unauthorized for domain mismatch");
     });
   });
 });

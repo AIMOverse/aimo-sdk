@@ -16,9 +16,7 @@ export const chatCompletionsRequestBody = {
   messages: chatCompletionsMessages,
 };
 
-export function debugFetch(
-  fetch: typeof globalThis.fetch
-): typeof globalThis.fetch {
+export function debugFetch(fetch: typeof globalThis.fetch): typeof globalThis.fetch {
   return async (input, init) => {
     console.log("Fetch request:", { input, init });
     const response = await fetch(input, init);
