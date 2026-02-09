@@ -1,6 +1,6 @@
 {
   "name": "@aimo.network/provider",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "AiMo Network Vercel AI SDK provider",
   "keywords": [
     "SDK"
@@ -38,8 +38,6 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "~3.0.7",
-    "@ai-sdk/google": "~3.0.6",
-    "@ai-sdk/anthropic": "~3.0.9",
     "@ai-sdk/provider": "~3.0.1",
     "@aimo.network/client": "workspace:*"
   },
