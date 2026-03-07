@@ -6,8 +6,8 @@
 import { describe, it, before } from "mocha";
 import { assert } from "chai";
 import { testConfig } from "./testEnv";
-import { createSIWxMessage, encodeSIWxHeader, prepareSIWxForSigning } from "@aimo.network/client";
-import { EvmClientSigner, EVM_MAINNET_CHAIN_ID } from "@aimo.network/evm";
+import { createSIWxMessage, encodeSIWxHeader, prepareSIWxForSigning } from "@bitrouter/client";
+import { EvmClientSigner, EVM_MAINNET_CHAIN_ID } from "@bitrouter/evm";
 import { privateKeyToAccount } from "viem/accounts";
 
 describe("EVM SIWx Authentication Tests", function () {
@@ -75,7 +75,7 @@ describe("EVM SIWx Authentication Tests", function () {
       const payload = {
         domain: testConfig.apiDomain,
         address,
-        statement: "Sign in to access the AiMo Network API.",
+        statement: "Sign in to access the BitRouter API.",
         uri: `https://${testConfig.apiDomain}`,
         version: "1",
         chainId: EVM_MAINNET_CHAIN_ID,
@@ -86,7 +86,7 @@ describe("EVM SIWx Authentication Tests", function () {
 
       assert.include(
         message,
-        "Sign in to access the AiMo Network API.",
+        "Sign in to access the BitRouter API.",
         "Expected statement in message",
       );
     });

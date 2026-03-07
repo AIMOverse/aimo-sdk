@@ -1,18 +1,18 @@
-"""AiMo Network Python SDK."""
+"""BitRouter Python SDK."""
 
-from aimo_network.client.siwx import (
+from bitrouter.client.siwx import (
     SIWxPayload,
     create_siwx_message,
     encode_siwx_header,
     prepare_siwx_for_signing,
 )
-from aimo_network.client.api import AimoClient, AimoClientOptions
+from bitrouter.client.api import BitRouterClient, BitRouterClientOptions
 
 __all__ = [
     "SIWxPayload",
     "create_siwx_message",
     "encode_siwx_header",
     "prepare_siwx_for_signing",
-    "AimoClient",
-    "AimoClientOptions",
+    "BitRouterClient",
+    "BitRouterClientOptions",
 ]

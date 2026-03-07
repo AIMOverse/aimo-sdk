@@ -1,19 +1,19 @@
 import { createOpenAI } from "@ai-sdk/openai";
-import { ApiBase, ClientSigner, wrapFetchWithSigner } from "@aimo.network/client";
+import { ApiBase, ClientSigner, wrapFetchWithSigner } from "@bitrouter/client";
 import { LanguageModelV3 } from "@ai-sdk/provider";
 
 /**
- * Options for configuring the Aimo Network provider
+ * Options for configuring the BitRouter Network provider
  */
-export interface AimoNetworkOptions {
+export interface BitRouterNetworkOptions {
   /**
    * The signer used for payments and authenticating requests
    */
   signer: ClientSigner;
   /**
-   * Optional base URL for the Aimo Network API.
+   * Optional base URL for the BitRouter Network API.
    *
-   * Defaults to https://beta.aimo.network
+   * Defaults to https://beta.bitrouter.io
    */
   baseURL?: string;
   /**
@@ -23,7 +23,7 @@ export interface AimoNetworkOptions {
    */
   fetch?: typeof globalThis.fetch;
   /**
-   * Optional API key for Aimo Network.
+   * Optional API key for BitRouter Network.
    */
   apiKey?: string;
   /**
@@ -33,24 +33,24 @@ export interface AimoNetworkOptions {
 }
 
 /**
- * Type representing an Aimo Network chat model ID
+ * Type representing a BitRouter Network chat model ID
  */
-export type AimoChatModelId = string & {};
+export type BitRouterChatModelId = string & {};
 
 /**
- * Creates an Aimo Network provider with the given options.
+ * Creates a BitRouter Network provider with the given options.
  * @param options - Configuration options for the provider
  * @returns - An object with methods to create chat models
  */
-export function aimoNetwork(options: AimoNetworkOptions) {
-  const apiBaseURL = options.baseURL || "https://beta.aimo.network";
+export function bitrouter(options: BitRouterNetworkOptions) {
+  const apiBaseURL = options.baseURL || "https://beta.bitrouter.io";
   const baseURL = new URL(ApiBase, apiBaseURL).toString();
   const wrappedFetch = wrapFetchWithSigner(options.fetch || globalThis.fetch, options.signer, {
     siwxDomain: options.siwxDomain,
   });
 
   const openai = {
-    chat: (modelId: AimoChatModelId): LanguageModelV3 => {
+    chat: (modelId: BitRouterChatModelId): LanguageModelV3 => {
       const provider = createOpenAI({
         baseURL,
         apiKey: options.apiKey || "siwx", // Dummy key - actual auth is via SIGN-IN-WITH-X header
@@ -67,6 +67,6 @@ export function aimoNetwork(options: AimoNetworkOptions) {
      * @param modelId - The ID of the chat model to create
      * @returns A LanguageModelV3 instance for the specified chat model
      */
-    chat: (modelId: AimoChatModelId): LanguageModelV3 => openai.chat(modelId),
+    chat: (modelId: BitRouterChatModelId): LanguageModelV3 => openai.chat(modelId),
   };
 }

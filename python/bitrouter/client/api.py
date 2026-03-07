@@ -1,6 +1,6 @@
-"""AiMo API Client.
+"""BitRouter API Client.
 
-Provides a typed client for interacting with AiMo API endpoints.
+Provides a typed client for interacting with BitRouter API endpoints.
 """
 
 from __future__ import annotations
@@ -11,10 +11,10 @@ from typing import Any
 
 import httpx
 
-from aimo_network.client.http import WrapHttpxOptions, create_siwx_httpx_client
-from aimo_network.client.signer import ClientSigner
+from bitrouter.client.http import WrapHttpxOptions, create_siwx_httpx_client
+from bitrouter.client.signer import ClientSigner
 
-AIMO_ENDPOINTS = {
+BITROUTER_ENDPOINTS = {
     "chat_completions": "/chat/completions",
     "session_balance": "/session/balance",
 }
@@ -32,8 +32,8 @@ class SessionBalanceResponse:
 
 
 @dataclass
-class AimoClientOptions:
-    """Options for creating an AimoClient instance."""
+class BitRouterClientOptions:
+    """Options for creating a BitRouterClient instance."""
 
     signer: ClientSigner
     base_url: str
@@ -43,22 +43,22 @@ class AimoClientOptions:
     httpx_client: httpx.AsyncClient | None = None
 
 
-class AimoClient:
-    """AiMo API Client.
+class BitRouterClient:
+    """BitRouter API Client.
 
-    Provides methods to interact with AiMo API endpoints including
+    Provides methods to interact with BitRouter API endpoints including
     chat completions and session balance queries.
 
     Can be used as an async context manager::
 
-        async with AimoClient(options) as client:
+        async with BitRouterClient(options) as client:
             balance = await client.session_balance()
     """
 
-    def __init__(self, options: AimoClientOptions) -> None:
+    def __init__(self, options: BitRouterClientOptions) -> None:
         self._base_url = options.base_url.rstrip("/")
         self._api_base = options.api_base.strip("/")
-        self._endpoints = {**AIMO_ENDPOINTS, **options.endpoints_override}
+        self._endpoints = {**BITROUTER_ENDPOINTS, **options.endpoints_override}
         self._owns_client = options.httpx_client is None
 
         if options.httpx_client is not None:
@@ -138,7 +138,7 @@ class AimoClient:
         if self._owns_client:
             await self._client.aclose()
 
-    async def __aenter__(self) -> AimoClient:
+    async def __aenter__(self) -> BitRouterClient:
         return self
 
     async def __aexit__(self, *args: Any) -> None:

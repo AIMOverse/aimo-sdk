@@ -1,14 +1,14 @@
 /**
  * SVM Client API Integration Tests
  *
- * Tests the AimoClient API using SVM (Solana) signer.
+ * Tests the BitRouterClient API using SVM (Solana) signer.
  */
 import { describe, it, before } from "mocha";
 import { assert } from "chai";
 import { testConfig } from "./testEnv";
-import { AimoClient } from "@aimo.network/client";
-import { SvmClientSigner, SOLANA_MAINNET_CHAIN_ID } from "@aimo.network/svm";
-import { aimoNetwork } from "@aimo.network/provider";
+import { BitRouterClient } from "@bitrouter/client";
+import { SvmClientSigner, SOLANA_MAINNET_CHAIN_ID } from "@bitrouter/svm";
+import { bitrouter } from "@bitrouter/provider";
 import { createKeyPairSignerFromBytes } from "@solana/kit";
 import bs58 from "bs58";
 import { generateText } from "ai";
@@ -18,7 +18,7 @@ describe("SVM Client API Tests", function () {
   // Increase timeout for API calls
   this.timeout(60000);
 
-  let client: AimoClient;
+  let client: BitRouterClient;
   let clientSigner: SvmClientSigner;
 
   before(async function () {
@@ -39,8 +39,8 @@ describe("SVM Client API Tests", function () {
       chainId: SOLANA_MAINNET_CHAIN_ID,
     });
 
-    // Create AimoClient (fetch is wrapped automatically)
-    client = new AimoClient({
+    // Create BitRouterClient (fetch is wrapped automatically)
+    client = new BitRouterClient({
       signer: clientSigner,
       baseUrl: testConfig.apiBase,
       siwxDomain: testConfig.apiDomain,
@@ -90,13 +90,13 @@ describe("SVM Client API Tests", function () {
     }
   });
   it("should be compatible with ai sdk", async function () {
-    const aimo = aimoNetwork({
+    const provider = bitrouter({
       signer: clientSigner,
       baseURL: testConfig.apiBase,
       siwxDomain: testConfig.apiDomain,
       fetch: debugFetch(globalThis.fetch),
     });
-    const model = aimo.chat("openai/gpt-5");
+    const model = provider.chat("openai/gpt-5");
     const result = await generateText({
       model,
       maxOutputTokens: 1000,

@@ -1,4 +1,4 @@
-"""HTTP wrapper for AiMo Network SDK.
+"""HTTP wrapper for BitRouter SDK.
 
 Wraps httpx.AsyncClient with SIWx authentication and x402 payment handling.
 """
@@ -12,8 +12,8 @@ from urllib.parse import urlparse
 
 import httpx
 
-from aimo_network.client.signer import ClientSigner
-from aimo_network.client.siwx import (
+from bitrouter.client.signer import ClientSigner
+from bitrouter.client.siwx import (
     SIWxPayload,
     create_siwx_message,
     encode_siwx_header,
@@ -117,7 +117,7 @@ class _SIWxTransport(httpx.AsyncBaseTransport):
         try:
             from x402.http.clients import x402HttpxClient
 
-            from aimo_network.client.signer import to_x402_client
+            from bitrouter.client.signer import to_x402_client
 
             self._x402_client = to_x402_client(self._signer)
             self._x402_transport_cls = x402HttpxClient

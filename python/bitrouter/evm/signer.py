@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from aimo_network.client.siwx import SIWxPayload, create_siwx_message
-from aimo_network.evm.constants import EVM_MAINNET_CHAIN_ID
+from bitrouter.client.siwx import SIWxPayload, create_siwx_message
+from bitrouter.evm.constants import EVM_MAINNET_CHAIN_ID
 
 try:
     from eth_account import Account  # type: ignore[import-untyped]
@@ -13,7 +13,7 @@ try:
 except ImportError as _err:
     raise ImportError(
         "Ethereum dependencies are required for EvmClientSigner. "
-        "Install them with: pip install aimo-network[evm]"
+        "Install them with: pip install bitrouter[evm]"
     ) from _err
 
 
@@ -97,7 +97,7 @@ class EvmClientSigner:
             except ImportError as e:
                 raise ImportError(
                     "x402[evm] is required for payment handling. "
-                    "Install it with: pip install aimo-network[evm]"
+                    "Install it with: pip install bitrouter[evm]"
                 ) from e
             self._exact_scheme = ExactEvmScheme(self._account)
 

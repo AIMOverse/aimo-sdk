@@ -62,8 +62,8 @@ export interface WrapFetchOptions {
  *
  * @example
  * ```typescript
- * import { wrapFetchWithSigner } from "@aimo.network/client";
- * import { EvmClientSigner } from "@aimo.network/evm";
+ * import { wrapFetchWithSigner } from "@bitrouter/client";
+ * import { EvmClientSigner } from "@bitrouter/evm";
  *
  * const signer = new EvmClientSigner(walletClient, "eip155:1");
  * const fetchWithAuth = wrapFetchWithSigner(fetch, signer);

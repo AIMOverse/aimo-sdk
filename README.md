@@ -1,17 +1,15 @@
-# AiMo Network SDK
+# BitRouter SDK
 
-Official SDKs for interacting with [AiMo Network](https://aimo.network) - a decentralized AI inference marketplace.
+Official SDKs for interacting with [BitRouter](https://bitrouter.ai) - the zero-ops LLM gateway for autonomous agents.
 
 ## SDKs
 
 | SDK | Language | Package | Directory |
 |-----|----------|---------|-----------|
-| TypeScript | TypeScript/JavaScript | `@aimo.network/*` (npm) | [`ts/`](./ts/) |
-| Python | Python 3.10+ | `aimo-network` (PyPI) | [`python/`](./python/) |
+| Python | Python 3.10+ | `bitrouter` (PyPI) | [`python/`](./python/) |
 
 ## Quick Links
 
-- [TypeScript SDK Documentation](./ts/README.md)
 - [Python SDK Documentation](./python/README.md)
 
 ## Authentication

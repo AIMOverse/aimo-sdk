@@ -1,4 +1,4 @@
-"""OpenAI provider integration for AiMo Network SDK.
+"""OpenAI provider integration for BitRouter SDK.
 
 Creates an OpenAI-compatible client that authenticates via SIWx wallet signing.
 """
@@ -7,22 +7,22 @@ from __future__ import annotations
 
 from typing import Any
 
-from aimo_network.client.api import API_BASE
-from aimo_network.client.http import WrapHttpxOptions, create_siwx_httpx_client
-from aimo_network.client.signer import ClientSigner
+from bitrouter.client.api import API_BASE
+from bitrouter.client.http import WrapHttpxOptions, create_siwx_httpx_client
+from bitrouter.client.signer import ClientSigner
 
 try:
     from openai import AsyncOpenAI  # type: ignore[import-untyped]
 except ImportError as _err:
     raise ImportError(
         "openai package is required for the OpenAI provider. "
-        "Install it with: pip install aimo-network[openai]"
+        "Install it with: pip install bitrouter[openai]"
     ) from _err
 
 
 def create_openai_client(
     signer: ClientSigner,
-    base_url: str = "https://beta.aimo.network",
+    base_url: str = "https://app.bitrouter.ai",
     api_key: str = "siwx",
     siwx_domain: str | None = None,
     **openai_kwargs: Any,
@@ -34,13 +34,13 @@ def create_openai_client(
 
     Args:
         signer: The client signer for authentication.
-        base_url: Base URL of the AiMo Network API.
+        base_url: Base URL of the BitRouter API.
         api_key: API key (default: "siwx" — actual auth is via wallet).
         siwx_domain: Optional domain override for SIWx signing.
         **openai_kwargs: Additional kwargs passed to AsyncOpenAI.
 
     Returns:
-        An AsyncOpenAI client configured for AiMo Network.
+        An AsyncOpenAI client configured for BitRouter.
     """
     full_base_url = f"{base_url.rstrip('/')}/{API_BASE.strip('/')}"
     wrap_options = WrapHttpxOptions(siwx_domain=siwx_domain)

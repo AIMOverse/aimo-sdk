@@ -1,6 +1,6 @@
 """EVM Client API integration tests.
 
-Tests the AimoClient API using EVM (Ethereum) signer.
+Tests the BitRouterClient API using EVM (Ethereum) signer.
 Requires EVM_PRIVATE_KEY env var.
 """
 
@@ -8,8 +8,8 @@ from __future__ import annotations
 
 import pytest
 
-from aimo_network.client.api import AimoClient, AimoClientOptions
-from aimo_network.evm import EvmClientSigner, EVM_MAINNET_CHAIN_ID
+from bitrouter.client.api import BitRouterClient, BitRouterClientOptions
+from bitrouter.evm import EvmClientSigner, EVM_MAINNET_CHAIN_ID
 
 from tests.conftest import CHAT_COMPLETIONS_REQUEST_BODY, TestConfig
 
@@ -27,9 +27,9 @@ def evm_signer(test_config: TestConfig) -> EvmClientSigner:
 @pytest.fixture()
 async def evm_client(
     test_config: TestConfig, evm_signer: EvmClientSigner
-) -> AimoClient:
-    client = AimoClient(
-        AimoClientOptions(
+) -> BitRouterClient:
+    client = BitRouterClient(
+        BitRouterClientOptions(
             signer=evm_signer,
             base_url=test_config.api_base,
             siwx_domain=test_config.api_domain,
@@ -40,14 +40,14 @@ async def evm_client(
 
 
 class TestEvmClientApi:
-    async def test_session_balance(self, evm_client: AimoClient) -> None:
+    async def test_session_balance(self, evm_client: BitRouterClient) -> None:
         balance = await evm_client.session_balance()
         assert balance.caip_account_id
         assert isinstance(balance.balance_micro_usdc, int)
         assert balance.balance_usd
         assert "eip155:" in balance.caip_account_id
 
-    async def test_chat_completions(self, evm_client: AimoClient) -> None:
+    async def test_chat_completions(self, evm_client: BitRouterClient) -> None:
         response = await evm_client.chat_completions(CHAT_COMPLETIONS_REQUEST_BODY)
         assert response.status_code in (200, 402)
 

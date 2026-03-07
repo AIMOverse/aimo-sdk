@@ -1,11 +1,11 @@
 {
-  "name": "@aimo.network/provider",
-  "version": "1.8.0",
-  "description": "AiMo Network Vercel AI SDK provider",
+  "name": "@bitrouter/provider",
+  "version": "0.1.0",
+  "description": "BitRouter Vercel AI SDK provider",
   "keywords": [
     "SDK"
   ],
-  "author": "Archer <archer@aimo.network>",
+  "author": "BitRouter",
   "license": "ISC",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -27,7 +27,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/AIMOverse/aimo-sdk"
+    "url": "https://github.com/bitrouter/bitrouter-sdk"
   },
   "publishConfig": {
     "access": "public"
@@ -39,7 +39,7 @@
   "dependencies": {
     "@ai-sdk/openai": "~3.0.7",
     "@ai-sdk/provider": "~3.0.1",
-    "@aimo.network/client": "workspace:*"
+    "@bitrouter/client": "workspace:*"
   },
   "devDependencies": {
     "rimraf": "~6.1.0",

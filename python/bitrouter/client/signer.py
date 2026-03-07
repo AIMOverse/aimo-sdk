@@ -1,4 +1,4 @@
-"""Client signer protocol for AiMo Network SDK.
+"""Client signer protocol for BitRouter SDK.
 
 Defines the protocol that all chain-specific signers must implement.
 """
@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import Any, Protocol, runtime_checkable
 
-from aimo_network.client.siwx import SIWxPayload
+from bitrouter.client.siwx import SIWxPayload
 
 
 @runtime_checkable
@@ -68,7 +68,7 @@ def to_x402_client(signer: ClientSigner | list[ClientSigner]) -> Any:
     except ImportError as e:
         raise ImportError(
             "x402 package is required for payment handling. "
-            "Install it with: pip install aimo-network[x402]"
+            "Install it with: pip install bitrouter[x402]"
         ) from e
 
     signers = signer if isinstance(signer, list) else [signer]

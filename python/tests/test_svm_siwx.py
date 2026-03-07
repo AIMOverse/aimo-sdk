@@ -13,13 +13,13 @@ from datetime import datetime, timezone, timedelta
 import httpx
 import pytest
 
-from aimo_network.client.siwx import (
+from bitrouter.client.siwx import (
     SIWxPayload,
     create_siwx_message,
     encode_siwx_header,
     prepare_siwx_for_signing,
 )
-from aimo_network.svm import SvmClientSigner, SOLANA_MAINNET_CHAIN_ID
+from bitrouter.svm import SvmClientSigner, SOLANA_MAINNET_CHAIN_ID
 
 from tests.conftest import TestConfig
 
@@ -65,14 +65,14 @@ class TestSvmSIWxMessageBuilding:
         payload = SIWxPayload(
             domain=test_config.api_domain,
             address=svm_address,
-            statement="Sign in to access the AiMo Network API.",
+            statement="Sign in to access the BitRouter API.",
             uri=f"https://{test_config.api_domain}",
             version="1",
             chain_id=SOLANA_MAINNET_CHAIN_ID,
             expiration_time=(datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
         )
         message = create_siwx_message(payload)
-        assert "Sign in to access the AiMo Network API." in message
+        assert "Sign in to access the BitRouter API." in message
 
     def test_resources_list(self, test_config: TestConfig, svm_address: str) -> None:
         payload = SIWxPayload(
@@ -82,12 +82,12 @@ class TestSvmSIWxMessageBuilding:
             version="1",
             chain_id=SOLANA_MAINNET_CHAIN_ID,
             expiration_time=(datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
-            resources=["https://api.aimo.network/chat", "https://api.aimo.network/models"],
+            resources=["https://api.bitrouter.ai/chat", "https://api.bitrouter.ai/models"],
         )
         message = create_siwx_message(payload)
         assert "Resources:" in message
-        assert "- https://api.aimo.network/chat" in message
-        assert "- https://api.aimo.network/models" in message
+        assert "- https://api.bitrouter.ai/chat" in message
+        assert "- https://api.bitrouter.ai/models" in message
 
 
 class TestSvmSIWxHeaderCreation:

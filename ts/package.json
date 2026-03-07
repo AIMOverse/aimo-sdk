@@ -1,6 +1,6 @@
 {
-  "name": "aimo-sdk",
-  "description": "AiMo Network Typescript SDK",
+  "name": "bitrouter-sdk",
+  "description": "BitRouter TypeScript SDK",
   "private": true,
   "workspaces": [
     "packages/*"

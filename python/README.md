@@ -1,24 +1,24 @@
-# AiMo Network Python SDK
+# BitRouter Python SDK
 
-Python SDK for interacting with [AiMo Network](https://aimo.network) - a decentralized AI inference marketplace.
+Python SDK for interacting with [BitRouter](https://bitrouter.ai) - the zero-ops LLM gateway for autonomous agents.
 
 ## Installation
 
 ```bash
 # Core client only
-pip install aimo-network
+pip install bitrouter
 
 # With Solana support
-pip install aimo-network[solana]
+pip install bitrouter[solana]
 
 # With Ethereum support
-pip install aimo-network[evm]
+pip install bitrouter[evm]
 
 # With OpenAI provider
-pip install aimo-network[openai]
+pip install bitrouter[openai]
 
 # Everything
-pip install aimo-network[all]
+pip install bitrouter[all]
 ```
 
 ## Usage
@@ -30,8 +30,8 @@ import asyncio
 from solders.keypair import Keypair
 import base58
 
-from aimo_network import AimoClient, AimoClientOptions
-from aimo_network.svm import SvmClientSigner, SOLANA_MAINNET_CHAIN_ID
+from bitrouter import BitRouterClient, BitRouterClientOptions
+from bitrouter.svm import SvmClientSigner, SOLANA_MAINNET_CHAIN_ID
 
 
 async def main():
@@ -42,10 +42,10 @@ async def main():
     # Create the client signer
     signer = SvmClientSigner(keypair=keypair, chain_id=SOLANA_MAINNET_CHAIN_ID)
 
-    # Create the AiMo client
-    async with AimoClient(AimoClientOptions(
+    # Create the BitRouter client
+    async with BitRouterClient(BitRouterClientOptions(
         signer=signer,
-        base_url="https://beta.aimo.network",
+        base_url="https://app.bitrouter.ai",
     )) as client:
         # Query your session balance
         balance = await client.session_balance()
@@ -54,7 +54,7 @@ async def main():
         # Make a chat completion request (OpenAI-compatible)
         response = await client.chat_completions({
             "model": "openai/gpt-4o-mini",
-            "messages": [{"role": "user", "content": "Hello, what is AiMo Network?"}],
+            "messages": [{"role": "user", "content": "Hello, what is BitRouter?"}],
         })
 
         if response.status_code == 200:
@@ -70,8 +70,8 @@ asyncio.run(main())
 import asyncio
 from eth_account import Account
 
-from aimo_network import AimoClient, AimoClientOptions
-from aimo_network.evm import EvmClientSigner, EVM_MAINNET_CHAIN_ID
+from bitrouter import BitRouterClient, BitRouterClientOptions
+from bitrouter.evm import EvmClientSigner, EVM_MAINNET_CHAIN_ID
 
 
 async def main():
@@ -81,10 +81,10 @@ async def main():
     # Create the client signer
     signer = EvmClientSigner(account=account, chain_id=EVM_MAINNET_CHAIN_ID)
 
-    # Create the AiMo client
-    async with AimoClient(AimoClientOptions(
+    # Create the BitRouter client
+    async with BitRouterClient(BitRouterClientOptions(
         signer=signer,
-        base_url="https://beta.aimo.network",
+        base_url="https://app.bitrouter.ai",
     )) as client:
         balance = await client.session_balance()
         print(f"Balance: {balance.balance_usd} USD")
@@ -94,15 +94,15 @@ asyncio.run(main())
 
 ### OpenAI Provider
 
-Use AiMo Network as a drop-in OpenAI replacement:
+Use BitRouter as a drop-in OpenAI replacement:
 
 ```python
 import asyncio
 from solders.keypair import Keypair
 import base58
 
-from aimo_network.svm import SvmClientSigner, SOLANA_MAINNET_CHAIN_ID
-from aimo_network.provider import create_openai_client
+from bitrouter.svm import SvmClientSigner, SOLANA_MAINNET_CHAIN_ID
+from bitrouter.provider import create_openai_client
 
 
 async def main():
@@ -115,7 +115,7 @@ async def main():
 
     response = await openai_client.chat.completions.create(
         model="openai/gpt-4o-mini",
-        messages=[{"role": "user", "content": "What is AiMo Network?"}],
+        messages=[{"role": "user", "content": "What is BitRouter?"}],
     )
     print(response.choices[0].message.content)
 
@@ -127,16 +127,16 @@ asyncio.run(main())
 ```python
 import asyncio
 import json
-from aimo_network import AimoClient, AimoClientOptions
-from aimo_network.svm import SvmClientSigner, SOLANA_MAINNET_CHAIN_ID
+from bitrouter import BitRouterClient, BitRouterClientOptions
+from bitrouter.svm import SvmClientSigner, SOLANA_MAINNET_CHAIN_ID
 
 
 async def main():
     # ... create signer as above ...
 
-    async with AimoClient(AimoClientOptions(
+    async with BitRouterClient(BitRouterClientOptions(
         signer=signer,
-        base_url="https://beta.aimo.network",
+        base_url="https://app.bitrouter.ai",
     )) as client:
         response = await client.chat_completions({
             "model": "openai/gpt-4o-mini",
@@ -156,10 +156,10 @@ asyncio.run(main())
 ### Local Development
 
 ```python
-client = AimoClient(AimoClientOptions(
+client = BitRouterClient(BitRouterClientOptions(
     signer=signer,
     base_url="http://localhost:8000",
-    siwx_domain="beta.aimo.network",  # Override SIWx signing domain
+    siwx_domain="app.bitrouter.ai",  # Override SIWx signing domain
 ))
 ```
 

@@ -1,5 +1,5 @@
-import type { ClientSigner, SIWxPayload } from "@aimo.network/client";
-import { createSIWxMessage } from "@aimo.network/client";
+import type { ClientSigner, SIWxPayload } from "@bitrouter/client";
+import { createSIWxMessage } from "@bitrouter/client";
 import type { PaymentPayload, PaymentRequirements } from "@x402/core/types";
 import { ExactSvmScheme, type ClientSvmSigner, type ClientSvmConfig } from "@x402/svm";
 import type { Address, SignableMessage, SignatureDictionary, SignatureBytes } from "@solana/kit";
@@ -78,7 +78,7 @@ export interface SvmClientSignerOptions {
  *
  * @example
  * ```typescript
- * import { SvmClientSigner } from "@aimo.network/svm";
+ * import { SvmClientSigner } from "@bitrouter/svm";
  * import { createKeyPairSignerFromBytes } from "@solana/kit";
  *
  * // Create a keypair signer (implements both signMessages and TransactionSigner)
