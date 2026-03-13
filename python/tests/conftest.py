@@ -21,7 +21,7 @@ try:
 except ImportError:
     pass
 
-DEFAULT_API_BASE = "https://beta.aimo.network"
+DEFAULT_API_BASE = "https://app.bitrouter.ai"
 
 
 @dataclass

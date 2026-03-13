@@ -1,13 +1,13 @@
-# AiMo Network SDK
+# BitRouter SDK
 
-TypeScript SDK for interacting with [AiMo Network](https://aimo.network) - a decentralized AI inference marketplace.
+TypeScript SDK for interacting with [BitRouter](https://bitrouter.io) - a decentralized AI inference marketplace.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 ## Table of content
 
-- [AiMo Network SDK](#aimo-network-sdk)
+- [BitRouter SDK](#bitrouter-sdk)
   - [Table of content](#table-of-content)
   - [Installation](#installation)
   - [Usage](#usage)
@@ -27,13 +27,13 @@ TypeScript SDK for interacting with [AiMo Network](https://aimo.network) - a dec
 
 ```bash
 # Install the client package
-npm install @aimo.network/client
+npm install @bitrouter/client
 
 # For Solana (SVM) support
-npm install @aimo.network/svm
+npm install @bitrouter/svm
 
 # For Ethereum (EVM) support
-npm install @aimo.network/evm
+npm install @bitrouter/evm
 ```
 
 ## Usage
@@ -41,8 +41,8 @@ npm install @aimo.network/evm
 ### Solana (SVM) Example
 
 ```typescript
-import { AimoClient } from "@aimo.network/client";
-import { SvmClientSigner, SOLANA_MAINNET_CHAIN_ID } from "@aimo.network/svm";
+import { BitRouterClient } from "@bitrouter/client";
+import { SvmClientSigner, SOLANA_MAINNET_CHAIN_ID } from "@bitrouter/svm";
 import { createKeyPairSignerFromBytes } from "@solana/kit";
 import bs58 from "bs58";
 
@@ -56,10 +56,10 @@ const signer = new SvmClientSigner({
   chainId: SOLANA_MAINNET_CHAIN_ID,
 });
 
-// Create the AiMo client
-const client = new AimoClient({
+// Create the BitRouter client
+const client = new BitRouterClient({
   signer,
-  baseUrl: "https://beta.aimo.network",
+  baseUrl: "https://beta.bitrouter.io",
 });
 
 // Query your session balance
@@ -69,7 +69,7 @@ console.log(`Balance: ${balance.balance_usd} USD`);
 // Make a chat completion request (OpenAI-compatible)
 const response = await client.chatCompletions({
   model: "openai/gpt-4o-mini",
-  messages: [{ role: "user", content: "Hello, what is AiMo Network?" }],
+  messages: [{ role: "user", content: "Hello, what is BitRouter?" }],
 });
 
 if (response.ok) {
@@ -81,8 +81,8 @@ if (response.ok) {
 ### Ethereum (EVM) Example
 
 ```typescript
-import { AimoClient } from "@aimo.network/client";
-import { EvmClientSigner, EVM_MAINNET_CHAIN_ID } from "@aimo.network/evm";
+import { BitRouterClient } from "@bitrouter/client";
+import { EvmClientSigner, EVM_MAINNET_CHAIN_ID } from "@bitrouter/evm";
 import { privateKeyToAccount } from "viem/accounts";
 
 // Create an EVM account from your private key
@@ -94,10 +94,10 @@ const signer = new EvmClientSigner({
   chainId: EVM_MAINNET_CHAIN_ID,
 });
 
-// Create the AiMo client
-const client = new AimoClient({
+// Create the BitRouter client
+const client = new BitRouterClient({
   signer,
-  baseUrl: "https://beta.aimo.network",
+  baseUrl: "https://beta.bitrouter.io",
 });
 
 // Query your session balance
@@ -108,15 +108,15 @@ console.log(`CAIP Account: ${balance.caip_account_id}`);
 
 ### AI SDK Integration
 
-The `@aimo.network/provider` package provides seamless integration with Vercel's [AI SDK](https://sdk.vercel.ai/):
+The `@bitrouter/provider` package provides seamless integration with Vercel's [AI SDK](https://sdk.vercel.ai/):
 
 ```bash
-npm install @aimo.network/provider ai
+npm install @bitrouter/provider ai
 ```
 
 ```typescript
-import { aimoNetwork } from "@aimo.network/provider";
-import { SvmClientSigner, SOLANA_MAINNET_CHAIN_ID } from "@aimo.network/svm";
+import { bitrouter } from "@bitrouter/provider";
+import { SvmClientSigner, SOLANA_MAINNET_CHAIN_ID } from "@bitrouter/svm";
 import { createKeyPairSignerFromBytes } from "@solana/kit";
 import { generateText } from "ai";
 import bs58 from "bs58";
@@ -129,16 +129,16 @@ const signer = new SvmClientSigner({
   chainId: SOLANA_MAINNET_CHAIN_ID,
 });
 
-// Create the AiMo Network provider
-const aimo = aimoNetwork({
+// Create the BitRouter provider
+const br = bitrouter({
   signer,
-  baseURL: "https://beta.aimo.network",
+  baseURL: "https://beta.bitrouter.io",
 });
 
 // Use with AI SDK's generateText
 const result = await generateText({
-  model: aimo.chat("openai/gpt-4o-mini"),
-  prompt: "What is AiMo Network?",
+  model: br.chat("openai/gpt-4o-mini"),
+  prompt: "What is BitRouter?",
 });
 
 console.log(result.text);
@@ -149,10 +149,10 @@ console.log(result.text);
 When developing locally against a local server that validates against a production domain, use the `siwxDomain` option:
 
 ```typescript
-const client = new AimoClient({
+const client = new BitRouterClient({
   signer,
   baseUrl: "http://localhost:8000",
-  siwxDomain: "beta.aimo.network", // Override SIWx signing domain
+  siwxDomain: "beta.bitrouter.io", // Override SIWx signing domain
 });
 ```
 
@@ -172,13 +172,13 @@ const signer = new SvmClientSigner({
 
 ## Packages
 
-| Package                  | Description                                                              |
-| ------------------------ | ------------------------------------------------------------------------ |
-| `@aimo.network/client`   | Core client for API interactions, SIWx authentication, and x402 payments |
-| `@aimo.network/svm`      | Solana wallet signer support                                             |
-| `@aimo.network/evm`      | Ethereum wallet signer support                                           |
-| `@aimo.network/provider` | Vercel AI SDK provider integration                                       |
-| `@aimo.network/react`    | React hooks and components (coming soon)                                 |
+| Package                | Description                                                              |
+| ---------------------- | ------------------------------------------------------------------------ |
+| `@bitrouter/client`   | Core client for API interactions, SIWx authentication, and x402 payments |
+| `@bitrouter/svm`      | Solana wallet signer support                                             |
+| `@bitrouter/evm`      | Ethereum wallet signer support                                           |
+| `@bitrouter/provider` | Vercel AI SDK provider integration                                       |
+| `@bitrouter/react`    | React hooks and components (coming soon)                                 |
 
 ## Authentication
 

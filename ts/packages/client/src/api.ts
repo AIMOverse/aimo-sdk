@@ -1,7 +1,7 @@
 /**
- * AiMo API Client
+ * BitRouter API Client
  *
- * Provides a typed client for interacting with AiMo API endpoints.
+ * Provides a typed client for interacting with BitRouter API endpoints.
  * @module
  */
 
@@ -11,7 +11,7 @@ import type { ClientSigner } from "./signer";
 /**
  * API endpoint paths (without base URL or API version prefix)
  */
-export const AimoEndpoints = {
+export const BitRouterEndpoints = {
   /** OpenAI-compatible chat completions endpoint */
   chatCompletions: "/chat/completions",
   /** Session balance query endpoint (requires SIWx auth) */
@@ -38,16 +38,16 @@ export interface SessionBalanceResponse {
 }
 
 /**
- * Options for creating an AimoClient instance
+ * Options for creating an BitRouterClient instance
  */
-export interface AimoClientOptions {
+export interface BitRouterClientOptions {
   /**
    * The client signer for SIWx authentication and x402 payment handling.
    * The client will automatically wrap fetch with the signer.
    */
   signer: ClientSigner;
   /**
-   * Base URL of the API server (e.g., "https://api.aimo.network")
+   * Base URL of the API server (e.g., "https://api.bitrouter.io")
    */
   baseUrl: string;
   /**
@@ -57,7 +57,7 @@ export interface AimoClientOptions {
   /**
    * Override default endpoint paths
    */
-  endpointsOverride?: Partial<typeof AimoEndpoints>;
+  endpointsOverride?: Partial<typeof BitRouterEndpoints>;
   /**
    * Optional custom fetch function to use instead of the default.
    * If provided, this fetch will be wrapped with the signer.
@@ -73,23 +73,23 @@ export interface AimoClientOptions {
 }
 
 /**
- * AiMo API Client
+ * BitRouter API Client
  *
- * Provides methods to interact with AiMo API endpoints including
+ * Provides methods to interact with BitRouter API endpoints including
  * chat completions and session balance queries.
  *
  * @example
  * ```typescript
- * import { AimoClient } from "@aimo.network/client";
- * import { EvmClientSigner } from "@aimo.network/evm";
+ * import { BitRouterClient } from "@bitrouter/client";
+ * import { EvmClientSigner } from "@bitrouter/evm";
  *
  * // Create a signer
  * const signer = new EvmClientSigner(wallet, "eip155:1");
  *
  * // Create the client (fetch is wrapped automatically)
- * const client = new AimoClient({
+ * const client = new BitRouterClient({
  *   signer,
- *   baseUrl: "https://api.aimo.network",
+ *   baseUrl: "https://api.bitrouter.io",
  * });
  *
  * // Query session balance
@@ -103,18 +103,18 @@ export interface AimoClientOptions {
  * });
  * ```
  */
-export class AimoClient {
+export class BitRouterClient {
   private readonly fetch: typeof globalThis.fetch;
   private readonly baseUrl: string;
   private readonly apiBase: string;
-  private readonly endpoints: typeof AimoEndpoints;
+  private readonly endpoints: typeof BitRouterEndpoints;
 
   /**
-   * Creates a new AimoClient instance.
+   * Creates a new BitRouterClient instance.
    *
    * @param options - Client configuration options
    */
-  constructor(options: AimoClientOptions) {
+  constructor(options: BitRouterClientOptions) {
     const baseFetch = options.fetchOverride ?? globalThis.fetch;
     this.fetch = wrapFetchWithSigner(baseFetch, options.signer, {
       siwxDomain: options.siwxDomain,
@@ -122,7 +122,7 @@ export class AimoClient {
     this.baseUrl = options.baseUrl;
     this.apiBase = options.apiBase ?? ApiBase;
     this.endpoints = {
-      ...AimoEndpoints,
+      ...BitRouterEndpoints,
       ...options.endpointsOverride,
     };
   }
@@ -152,7 +152,7 @@ export class AimoClient {
    * Builds the full URL for an endpoint.
    * Handles slash normalization to avoid double slashes.
    */
-  private buildUrl(endpoint: (typeof AimoEndpoints)[keyof typeof AimoEndpoints]): string {
+  private buildUrl(endpoint: (typeof BitRouterEndpoints)[keyof typeof BitRouterEndpoints]): string {
     // Ensure no double slashes
     return `${this.baseUrl.replace(/\/+$/, "")}/${this.apiBase.replace(
       /^\/+|\/+$/g,

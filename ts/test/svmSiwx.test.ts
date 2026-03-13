@@ -6,8 +6,8 @@
 import { describe, it, before } from "mocha";
 import { assert } from "chai";
 import { testConfig } from "./testEnv";
-import { createSIWxMessage, encodeSIWxHeader, prepareSIWxForSigning } from "@aimo.network/client";
-import { SvmClientSigner, SOLANA_MAINNET_CHAIN_ID } from "@aimo.network/svm";
+import { createSIWxMessage, encodeSIWxHeader, prepareSIWxForSigning } from "@bitrouter/client";
+import { SvmClientSigner, SOLANA_MAINNET_CHAIN_ID } from "@bitrouter/svm";
 import { createKeyPairSignerFromBytes, signBytes } from "@solana/kit";
 import bs58 from "bs58";
 
@@ -78,7 +78,7 @@ describe("SVM SIWx Authentication Tests", function () {
       const payload = {
         domain: testConfig.apiDomain,
         address,
-        statement: "Sign in to access the AiMo Network API.",
+        statement: "Sign in to access the BitRouter API.",
         uri: `https://${testConfig.apiDomain}`,
         version: "1",
         chainId: SOLANA_MAINNET_CHAIN_ID,
@@ -89,7 +89,7 @@ describe("SVM SIWx Authentication Tests", function () {
 
       assert.include(
         message,
-        "Sign in to access the AiMo Network API.",
+        "Sign in to access the BitRouter API.",
         "Expected statement in message",
       );
     });
@@ -102,14 +102,14 @@ describe("SVM SIWx Authentication Tests", function () {
         version: "1",
         chainId: SOLANA_MAINNET_CHAIN_ID,
         expirationTime: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
-        resources: ["https://api.aimo.network/chat", "https://api.aimo.network/models"],
+        resources: ["https://api.bitrouter.io/chat", "https://api.bitrouter.io/models"],
       };
 
       const message = createSIWxMessage(payload);
 
       assert.include(message, "Resources:", "Expected resources section");
-      assert.include(message, "- https://api.aimo.network/chat", "Expected first resource");
-      assert.include(message, "- https://api.aimo.network/models", "Expected second resource");
+      assert.include(message, "- https://api.bitrouter.io/chat", "Expected first resource");
+      assert.include(message, "- https://api.bitrouter.io/models", "Expected second resource");
     });
   });
 

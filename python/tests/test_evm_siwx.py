@@ -14,13 +14,13 @@ from datetime import datetime, timezone, timedelta
 import httpx
 import pytest
 
-from aimo_network.client.siwx import (
+from bitrouter.client.siwx import (
     SIWxPayload,
     create_siwx_message,
     encode_siwx_header,
     prepare_siwx_for_signing,
 )
-from aimo_network.evm import EvmClientSigner, EVM_MAINNET_CHAIN_ID
+from bitrouter.evm import EvmClientSigner, EVM_MAINNET_CHAIN_ID
 
 from tests.conftest import TestConfig
 
@@ -65,14 +65,14 @@ class TestEvmSIWxMessageBuilding:
         payload = SIWxPayload(
             domain=test_config.api_domain,
             address=evm_address,
-            statement="Sign in to access the AiMo Network API.",
+            statement="Sign in to access the BitRouter API.",
             uri=f"https://{test_config.api_domain}",
             version="1",
             chain_id=EVM_MAINNET_CHAIN_ID,
             expiration_time=(datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
         )
         message = create_siwx_message(payload)
-        assert "Sign in to access the AiMo Network API." in message
+        assert "Sign in to access the BitRouter API." in message
 
     def test_optional_nonce_and_issued_at(
         self, test_config: TestConfig, evm_address: str

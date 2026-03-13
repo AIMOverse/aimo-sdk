@@ -1,6 +1,6 @@
 """Streaming response tests.
 
-Tests streaming chat completions using the AimoClient.
+Tests streaming chat completions using the BitRouterClient.
 Requires SOLANA_PRIVATE_KEY env var.
 """
 
@@ -10,8 +10,8 @@ import json
 
 import pytest
 
-from aimo_network.client.api import AimoClient, AimoClientOptions
-from aimo_network.svm import SvmClientSigner, SOLANA_MAINNET_CHAIN_ID
+from bitrouter.client.api import BitRouterClient, BitRouterClientOptions
+from bitrouter.svm import SvmClientSigner, SOLANA_MAINNET_CHAIN_ID
 
 from tests.conftest import CHAT_COMPLETIONS_MESSAGES, TestConfig
 
@@ -31,9 +31,9 @@ def svm_signer(test_config: TestConfig) -> SvmClientSigner:
 @pytest.fixture()
 async def stream_client(
     test_config: TestConfig, svm_signer: SvmClientSigner
-) -> AimoClient:
-    client = AimoClient(
-        AimoClientOptions(
+) -> BitRouterClient:
+    client = BitRouterClient(
+        BitRouterClientOptions(
             signer=svm_signer,
             base_url=test_config.api_base,
             siwx_domain=test_config.api_domain,
@@ -45,7 +45,7 @@ async def stream_client(
 
 @pytest.mark.timeout(300)
 class TestStreamResponse:
-    async def test_streaming_chat_completion(self, stream_client: AimoClient) -> None:
+    async def test_streaming_chat_completion(self, stream_client: BitRouterClient) -> None:
         response = await stream_client.chat_completions({
             "model": "deepseek/deepseek-v3.1",
             "stream": True,

@@ -13,7 +13,7 @@ const envFile = isLocal ? ".env.local" : ".env";
 dotenv.config({ path: envFile });
 
 // Default API base URLs
-const DEFAULT_API_BASE_PRODUCTION = "https://beta.aimo.network";
+const DEFAULT_API_BASE_PRODUCTION = "https://beta.bitrouter.io";
 const DEFAULT_API_BASE_LOCAL = "http://localhost:8000";
 
 // Derive API base and domain

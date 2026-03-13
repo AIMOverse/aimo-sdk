@@ -1,5 +1,5 @@
-import type { ClientSigner, SIWxPayload } from "@aimo.network/client";
-import { createSIWxMessage, prepareSIWxForSigning } from "@aimo.network/client";
+import type { ClientSigner, SIWxPayload } from "@bitrouter/client";
+import { createSIWxMessage, prepareSIWxForSigning } from "@bitrouter/client";
 import type { PaymentPayload, PaymentRequirements } from "@x402/core/types";
 import { ExactEvmScheme, type ClientEvmSigner } from "@x402/evm";
 
@@ -63,7 +63,7 @@ export interface EvmClientSignerOptions {
  *
  * @example
  * ```typescript
- * import { EvmClientSigner } from "@aimo.network/evm";
+ * import { EvmClientSigner } from "@bitrouter/evm";
  * import { createWalletClient, http } from "viem";
  * import { privateKeyToAccount } from "viem/accounts";
  * import { mainnet } from "viem/chains";

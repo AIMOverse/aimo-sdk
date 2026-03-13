@@ -4,7 +4,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@aimo.network/*": ["packages/*/src"]
+      "@bitrouter/*": ["packages/*/src"]
     },
     "noEmit": true,
     "types": ["node", "mocha"]

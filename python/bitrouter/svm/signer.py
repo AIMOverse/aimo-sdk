@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from aimo_network.client.siwx import SIWxPayload, create_siwx_message
-from aimo_network.svm.constants import SOLANA_MAINNET_CHAIN_ID
+from bitrouter.client.siwx import SIWxPayload, create_siwx_message
+from bitrouter.svm.constants import SOLANA_MAINNET_CHAIN_ID
 
 try:
     from solders.keypair import Keypair  # type: ignore[import-untyped]
@@ -13,7 +13,7 @@ try:
 except ImportError as _err:
     raise ImportError(
         "Solana dependencies are required for SvmClientSigner. "
-        "Install them with: pip install aimo-network[solana]"
+        "Install them with: pip install bitrouter[solana]"
     ) from _err
 
 
@@ -98,7 +98,7 @@ class SvmClientSigner:
             except ImportError as e:
                 raise ImportError(
                     "x402[svm] is required for payment handling. "
-                    "Install it with: pip install aimo-network[solana]"
+                    "Install it with: pip install bitrouter[solana]"
                 ) from e
             config = {"rpc_url": self._rpc_url} if self._rpc_url else {}
             self._exact_scheme = ExactSvmScheme(self._keypair, config)

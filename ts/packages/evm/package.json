@@ -1,13 +1,13 @@
 {
-  "name": "@aimo.network/evm",
-  "version": "1.8.0",
-  "description": "AiMo Network EVM signer utils",
+  "name": "@bitrouter/evm",
+  "version": "0.1.0",
+  "description": "BitRouter EVM signer utils",
   "keywords": [
     "sdk",
     "evm",
     "ethereum"
   ],
-  "author": "Archer <archer@aimo.network>",
+  "author": "BitRouter",
   "license": "ISC",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -29,7 +29,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/AIMOverse/aimo-sdk"
+    "url": "https://github.com/bitrouter/bitrouter-sdk"
   },
   "publishConfig": {
     "access": "public"
@@ -39,7 +39,7 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@aimo.network/client": "workspace:*",
+    "@bitrouter/client": "workspace:*",
     "@x402/core": "~2.1.0",
     "@x402/evm": "~2.1.0",
     "viem": "~2.43.3"

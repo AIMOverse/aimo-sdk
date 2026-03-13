@@ -1,14 +1,14 @@
 /**
  * Stream Response Tests
  *
- * Tests streaming chat completions using the AimoClient with SVM (Solana) signer.
+ * Tests streaming chat completions using the BitRouterClient with SVM (Solana) signer.
  * Demonstrates how to handle Server-Sent Events (SSE) streaming responses.
  */
 import { describe, it, before } from "mocha";
 import { assert } from "chai";
 import { testConfig } from "./testEnv";
-import { AimoClient, wrapFetchWithSigner } from "@aimo.network/client";
-import { SvmClientSigner, SOLANA_MAINNET_CHAIN_ID } from "@aimo.network/svm";
+import { BitRouterClient, wrapFetchWithSigner } from "@bitrouter/client";
+import { SvmClientSigner, SOLANA_MAINNET_CHAIN_ID } from "@bitrouter/svm";
 import { createKeyPairSignerFromBytes } from "@solana/kit";
 import bs58 from "bs58";
 import { chatCompletionsMessages } from "./utils";
@@ -117,7 +117,7 @@ describe("Stream Responses", function () {
   // Increase timeout for streaming API calls (server can be slow)
   this.timeout(300000);
 
-  let client: AimoClient;
+  let client: BitRouterClient;
   let clientSigner: SvmClientSigner;
 
   before(async function () {
@@ -146,15 +146,15 @@ describe("Stream Responses", function () {
     clientSigner = wrapSignerWithDebug(clientSigner);
     console.log(`    ✅ Client signer created (with debug wrapper)`);
 
-    // Create AimoClient with debug fetch wrapper
-    console.log(`    📝 Creating AimoClient with debug fetch...`);
-    client = new AimoClient({
+    // Create BitRouterClient with debug fetch wrapper
+    console.log(`    📝 Creating BitRouterClient with debug fetch...`);
+    client = new BitRouterClient({
       signer: clientSigner,
       baseUrl: testConfig.apiBase,
       siwxDomain: testConfig.apiDomain,
       fetchOverride: createDebugFetch(globalThis.fetch),
     });
-    console.log(`    ✅ AimoClient created`);
+    console.log(`    ✅ BitRouterClient created`);
     console.log(`    🔧 Setup complete\n`);
   });
 

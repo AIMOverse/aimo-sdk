@@ -8,7 +8,7 @@ from __future__ import annotations
 import base64
 import json
 
-from aimo_network.client.siwx import (
+from bitrouter.client.siwx import (
     SIWxPayload,
     create_siwx_message,
     encode_siwx_header,
@@ -19,56 +19,56 @@ from aimo_network.client.siwx import (
 class TestCreateSIWxMessage:
     def test_solana_message_format(self) -> None:
         payload = SIWxPayload(
-            domain="beta.aimo.network",
+            domain="app.bitrouter.ai",
             address="7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
-            uri="https://beta.aimo.network",
+            uri="https://app.bitrouter.ai",
             version="1",
             chain_id="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
             expiration_time="2025-01-01T00:00:00.000Z",
         )
         message = create_siwx_message(payload)
 
-        assert "beta.aimo.network wants you to sign in with your Solana account:" in message
+        assert "app.bitrouter.ai wants you to sign in with your Solana account:" in message
         assert "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU" in message
-        assert "URI: https://beta.aimo.network" in message
+        assert "URI: https://app.bitrouter.ai" in message
         assert "Version: 1" in message
         assert "Chain ID: solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp" in message
         assert "Expiration Time: 2025-01-01T00:00:00.000Z" in message
 
     def test_ethereum_message_format(self) -> None:
         payload = SIWxPayload(
-            domain="beta.aimo.network",
+            domain="app.bitrouter.ai",
             address="0x1234567890abcdef1234567890abcdef12345678",
-            uri="https://beta.aimo.network",
+            uri="https://app.bitrouter.ai",
             version="1",
             chain_id="eip155:1",
             expiration_time="2025-01-01T00:00:00.000Z",
         )
         message = create_siwx_message(payload)
 
-        assert "beta.aimo.network wants you to sign in with your Ethereum account:" in message
+        assert "app.bitrouter.ai wants you to sign in with your Ethereum account:" in message
         assert "0x1234567890abcdef1234567890abcdef12345678" in message
         assert "Chain ID: eip155:1" in message
 
     def test_optional_statement(self) -> None:
         payload = SIWxPayload(
-            domain="beta.aimo.network",
+            domain="app.bitrouter.ai",
             address="test-address",
-            uri="https://beta.aimo.network",
+            uri="https://app.bitrouter.ai",
             version="1",
             chain_id="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
             expiration_time="2025-01-01T00:00:00.000Z",
-            statement="Sign in to access the AiMo Network API.",
+            statement="Sign in to access the BitRouter API.",
         )
         message = create_siwx_message(payload)
 
-        assert "Sign in to access the AiMo Network API." in message
+        assert "Sign in to access the BitRouter API." in message
 
     def test_optional_nonce_and_issued_at(self) -> None:
         payload = SIWxPayload(
-            domain="beta.aimo.network",
+            domain="app.bitrouter.ai",
             address="test-address",
-            uri="https://beta.aimo.network",
+            uri="https://app.bitrouter.ai",
             version="1",
             chain_id="eip155:1",
             expiration_time="2025-01-01T00:00:00.000Z",
@@ -82,22 +82,22 @@ class TestCreateSIWxMessage:
 
     def test_resources_list(self) -> None:
         payload = SIWxPayload(
-            domain="beta.aimo.network",
+            domain="app.bitrouter.ai",
             address="test-address",
-            uri="https://beta.aimo.network",
+            uri="https://app.bitrouter.ai",
             version="1",
             chain_id="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
             expiration_time="2025-01-01T00:00:00.000Z",
             resources=[
-                "https://api.aimo.network/chat",
-                "https://api.aimo.network/models",
+                "https://api.bitrouter.ai/chat",
+                "https://api.bitrouter.ai/models",
             ],
         )
         message = create_siwx_message(payload)
 
         assert "Resources:" in message
-        assert "- https://api.aimo.network/chat" in message
-        assert "- https://api.aimo.network/models" in message
+        assert "- https://api.bitrouter.ai/chat" in message
+        assert "- https://api.bitrouter.ai/models" in message
 
     def test_unknown_chain_namespace(self) -> None:
         payload = SIWxPayload(
@@ -126,9 +126,9 @@ class TestEncodeSIWxHeader:
 
     def test_roundtrip_with_real_message(self) -> None:
         payload = SIWxPayload(
-            domain="beta.aimo.network",
+            domain="app.bitrouter.ai",
             address="test-address",
-            uri="https://beta.aimo.network",
+            uri="https://app.bitrouter.ai",
             version="1",
             chain_id="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
             expiration_time="2025-01-01T00:00:00.000Z",
@@ -146,9 +146,9 @@ class TestEncodeSIWxHeader:
 class TestPrepareSIWxForSigning:
     def test_returns_message_and_callable(self) -> None:
         payload = SIWxPayload(
-            domain="beta.aimo.network",
+            domain="app.bitrouter.ai",
             address="test-address",
-            uri="https://beta.aimo.network",
+            uri="https://app.bitrouter.ai",
             version="1",
             chain_id="eip155:1",
             expiration_time="2025-01-01T00:00:00.000Z",
@@ -161,9 +161,9 @@ class TestPrepareSIWxForSigning:
 
     def test_create_header_produces_valid_output(self) -> None:
         payload = SIWxPayload(
-            domain="beta.aimo.network",
+            domain="app.bitrouter.ai",
             address="test-address",
-            uri="https://beta.aimo.network",
+            uri="https://app.bitrouter.ai",
             version="1",
             chain_id="eip155:1",
             expiration_time="2025-01-01T00:00:00.000Z",

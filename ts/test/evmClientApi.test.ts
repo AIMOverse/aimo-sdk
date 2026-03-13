@@ -1,14 +1,14 @@
 /**
  * EVM Client API Integration Tests
  *
- * Tests the AimoClient API using EVM (Ethereum) signer.
+ * Tests the BitRouterClient API using EVM (Ethereum) signer.
  */
 import { describe, it, before } from "mocha";
 import { assert } from "chai";
 import { testConfig } from "./testEnv";
-import { AimoClient } from "@aimo.network/client";
-import { EvmClientSigner } from "@aimo.network/evm";
-import { aimoNetwork } from "@aimo.network/provider";
+import { BitRouterClient } from "@bitrouter/client";
+import { EvmClientSigner } from "@bitrouter/evm";
+import { bitrouter } from "@bitrouter/provider";
 import { privateKeyToAccount } from "viem/accounts";
 import { generateText } from "ai";
 import { chatCompletionsMessages, chatCompletionsRequestBody, debugFetch } from "./utils";
@@ -17,7 +17,7 @@ describe("EVM Client API Tests", function () {
   // Increase timeout for API calls
   this.timeout(60000);
 
-  let client: AimoClient;
+  let client: BitRouterClient;
   let clientSigner: EvmClientSigner;
 
   before(function () {
@@ -37,8 +37,8 @@ describe("EVM Client API Tests", function () {
       chainId: "eip155:8453",
     });
 
-    // Create AimoClient (fetch is wrapped automatically)
-    client = new AimoClient({
+    // Create BitRouterClient (fetch is wrapped automatically)
+    client = new BitRouterClient({
       signer: clientSigner,
       baseUrl: testConfig.apiBase,
       siwxDomain: testConfig.apiDomain,
@@ -83,13 +83,13 @@ describe("EVM Client API Tests", function () {
   });
 
   it("should be compatible with ai sdk", async function () {
-    const aimo = aimoNetwork({
+    const provider = bitrouter({
       signer: clientSigner,
       baseURL: testConfig.apiBase,
       siwxDomain: testConfig.apiDomain,
       fetch: debugFetch(globalThis.fetch),
     });
-    const model = aimo.chat("openai/gpt-5");
+    const model = provider.chat("openai/gpt-5");
     const result = await generateText({
       model,
       maxOutputTokens: 1000,

@@ -10,5 +10,5 @@ export { toX402Client, toSchemeRegistrations } from "./signer";
 export { wrapFetchWithSigner } from "./fetch";
 
 // Re-export API client
-export { AimoClient, AimoEndpoints, ApiBase } from "./api";
-export type { SessionBalanceResponse, AimoClientOptions } from "./api";
+export { BitRouterClient, BitRouterEndpoints, ApiBase } from "./api";
+export type { SessionBalanceResponse, BitRouterClientOptions } from "./api";
