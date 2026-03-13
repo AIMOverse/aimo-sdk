@@ -6,10 +6,12 @@ Official SDKs for interacting with [BitRouter](https://bitrouter.ai) - the zero-
 
 | SDK | Language | Package | Directory |
 |-----|----------|---------|-----------|
+| TypeScript | TypeScript/JavaScript | `@bitrouter/*` (npm) | [`ts/`](./ts/) |
 | Python | Python 3.10+ | `bitrouter` (PyPI) | [`python/`](./python/) |
 
 ## Quick Links
 
+- [TypeScript SDK Documentation](./ts/README.md)
 - [Python SDK Documentation](./python/README.md)
 
 ## Authentication
